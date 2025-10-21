@@ -1,0 +1,677 @@
+/* Barcode Scan Page Styles */
+.barcodeScan {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: var(--white);
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--gray-light);
+}
+
+.headerContent h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Scan Section */
+.scanSection {
+  margin-bottom: 40px;
+}
+
+.scanCard {
+  background-color: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-light);
+}
+
+/* Scanner Container */
+.scannerContainer {
+  margin-bottom: 24px;
+}
+
+.scanPrompt {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.scanIcon {
+  font-size: 4rem;
+  color: var(--primary-green);
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.scanTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.scanDescription {
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Camera Container */
+.cameraContainer {
+  position: relative;
+  max-width: 100%;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-light);
+}
+
+.camera {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.scanOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+}
+
+.scanFrame {
+  width: 250px;
+  height: 100px;
+  border: 2px solid #00ff00;
+  border-radius: 8px;
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.scanFrame::before,
+.scanFrame::after {
+  content: '';
+  position: absolute;
+  background: #00ff00;
+}
+
+.scanFrame::before {
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  height: 30px;
+}
+
+.scanFrame::after {
+  bottom: -2px;
+  left: -2px;
+  right: -2px;
+  height: 30px;
+}
+
+.scanInstruction {
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-align: center;
+  max-width: 300px;
+  line-height: 1.4;
+}
+
+/* Scan Actions */
+.scanActions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.scanButton,
+.manualButton,
+.stopButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.scanButton,
+.manualButton {
+  background: var(--primary-gradient);
+  color: var(--white);
+  box-shadow: var(--shadow-light);
+}
+
+.scanButton:hover,
+.manualButton:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.stopButton {
+  background-color: var(--white);
+  color: var(--error);
+  border: 2px solid var(--error);
+}
+
+.stopButton:hover {
+  background-color: var(--error);
+  color: var(--white);
+}
+
+/* Manual Search */
+.manualSearch {
+  text-align: center;
+  padding: 20px;
+}
+
+.manualTitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 24px 0;
+}
+
+.searchBox {
+  display: flex;
+  gap: 8px;
+  max-width: 400px;
+  margin: 0 auto 24px;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid var(--gray-medium);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--primary-green);
+}
+
+.searchButton {
+  padding: 12px 16px;
+  background: var(--primary-gradient);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.searchButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.searchButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background-color: var(--white);
+  color: var(--text-primary);
+  border: 2px solid var(--gray-medium);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.backButton:hover {
+  border-color: var(--primary-green);
+  color: var(--primary-green);
+}
+
+/* Product Found */
+.productFound {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.productHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.successIcon {
+  font-size: 3rem;
+  color: var(--primary-green);
+}
+
+.productFound h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.scanAnotherButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--primary-gradient);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.scanAnotherButton:hover {
+  transform: translateY(-2px);
+}
+
+/* Error Message */
+.errorMessage {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 12px 16px;
+  background-color: #ffebee;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  color: var(--error);
+  font-size: 0.95rem;
+}
+
+/* Product Section */
+.productSection {
+  margin-bottom: 40px;
+}
+
+.productCard {
+  background-color: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-light);
+}
+
+.productHeader {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  margin-bottom: 24px;
+  align-items: start;
+}
+
+.productBasic {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.productName {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.productBrand,
+.barcode {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 1rem;
+}
+
+.productImage {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: var(--shadow-light);
+}
+
+/* Nutrition Section */
+.nutritionSection {
+  margin-bottom: 24px;
+}
+
+.nutritionSection h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+}
+
+.servingSize {
+  color: var(--text-secondary);
+  margin: 0 0 16px 0;
+  font-style: italic;
+}
+
+.nutritionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  padding: 20px;
+  background-color: var(--gray-light);
+  border-radius: 12px;
+}
+
+.nutritionItem {
+  text-align: center;
+}
+
+.nutritionValue {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--primary-green);
+  margin-bottom: 4px;
+}
+
+.nutritionLabel {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Ingredients Section */
+.ingredientsSection {
+  margin-bottom: 24px;
+}
+
+.ingredientsSection h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+}
+
+.ingredientsText {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  background-color: var(--gray-light);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+/* Allergens Section */
+.allergensSection {
+  margin-bottom: 24px;
+}
+
+.allergensSection h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--error);
+  margin: 0 0 12px 0;
+}
+
+.allergensList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.allergen {
+  font-size: 0.9rem;
+  color: var(--error);
+  background-color: #fff3e0;
+  border: 1px solid #ff9800;
+  padding: 6px 10px;
+  border-radius: 16px;
+}
+
+/* Product Actions */
+.productActions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-top: 24px;
+  border-top: 1px solid var(--gray-light);
+}
+
+.addButton,
+.scanAnotherButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.addButton {
+  background: var(--primary-gradient);
+  color: var(--white);
+  box-shadow: var(--shadow-light);
+}
+
+.addButton:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.scanAnotherButton {
+  background-color: var(--white);
+  color: var(--text-primary);
+  border: 2px solid var(--gray-medium);
+}
+
+.scanAnotherButton:hover {
+  border-color: var(--primary-green);
+  color: var(--primary-green);
+}
+
+/* Tips Section */
+.tipsSection {
+  margin-top: 50px;
+  padding-top: 30px;
+  border-top: 1px solid var(--gray-light);
+}
+
+.sectionTitle {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 24px 0;
+  text-align: center;
+}
+
+.tipsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.tipCard {
+  background-color: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.tipCard:hover {
+  box-shadow: var(--shadow-light);
+}
+
+.tipIcon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.tipTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.tipDescription {
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .barcodeScan {
+    padding: 15px;
+  }
+
+  .headerContent h1 {
+    font-size: 2rem;
+  }
+
+  .scanCard {
+    padding: 20px;
+  }
+
+  .scanActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .scanButton,
+  .manualButton,
+  .stopButton {
+    justify-content: center;
+  }
+
+  .searchBox {
+    flex-direction: column;
+  }
+
+  .searchInput {
+    margin-bottom: 8px;
+  }
+
+  .productHeader {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .productImage {
+    align-self: center;
+    margin-top: 12px;
+  }
+
+  .nutritionGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .nutritionValue {
+    font-size: 1.2rem;
+  }
+
+  .productActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .addButton,
+  .scanAnotherButton {
+    justify-content: center;
+  }
+
+  .tipsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .barcodeScan {
+    padding: 10px;
+  }
+
+  .headerContent h1 {
+    font-size: 1.8rem;
+  }
+
+  .scanPrompt {
+    padding: 30px 15px;
+  }
+
+  .scanIcon {
+    font-size: 3rem;
+  }
+
+  .scanTitle {
+    font-size: 1.3rem;
+  }
+
+  .cameraContainer {
+    margin: 0 -15px;
+  }
+
+  .scanFrame {
+    width: 200px;
+    height: 80px;
+  }
+
+  .nutritionGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .nutritionValue {
+    font-size: 1.1rem;
+  }
+
+  .allergensList {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .allergen {
+    align-self: flex-start;
+  }
+}

@@ -1,0 +1,444 @@
+.container {
+  min-height: 100vh;
+  background-color: var(--gray-light);
+  padding: var(--spacing-lg);
+}
+
+.addMealCard {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: var(--white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-heavy);
+  overflow: hidden;
+}
+
+/* Header */
+.header {
+  background: var(--primary-gradient);
+  color: var(--white);
+  padding: var(--spacing-xl);
+  position: relative;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-bottom: var(--spacing-lg);
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.headerContent {
+  text-align: center;
+}
+
+.title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.subtitle {
+  font-size: var(--font-size-base);
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* Form */
+.form {
+  padding: var(--spacing-xl);
+}
+
+.section {
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-xl);
+  border-bottom: 1px solid var(--gray-medium);
+}
+
+.section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-lg) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.sectionTitle::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: var(--primary-green);
+  border-radius: var(--radius-sm);
+}
+
+.field {
+  margin-bottom: var(--spacing-lg);
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-base);
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 2px solid var(--gray-medium);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  background-color: var(--white);
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+  outline: none;
+}
+
+.input:disabled,
+.textarea:disabled {
+  background-color: var(--gray-light);
+  cursor: not-allowed;
+}
+
+.inputError {
+  border-color: var(--error);
+}
+
+.inputError:focus {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Meal Type Selection */
+.mealTypeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.mealTypeOption {
+  cursor: pointer;
+}
+
+.radioInput {
+  display: none;
+}
+
+.mealTypeCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  border: 2px solid var(--gray-medium);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-fast);
+  background-color: var(--white);
+}
+
+.mealTypeCard:hover {
+  border-color: var(--primary-green);
+  background-color: var(--light-green);
+}
+
+.mealTypeOption input[type="radio"]:checked + .mealTypeCard {
+  border-color: var(--primary-green);
+  background-color: var(--light-green);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.mealTypeIcon {
+  font-size: 2rem;
+}
+
+.mealTypeLabel {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+}
+
+/* Nutrition Grid */
+.nutritionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+/* Ingredients */
+.ingredientsInput {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.addButton {
+  width: 48px;
+  height: 48px;
+  background: var(--primary-green);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.addButton:hover:not(:disabled) {
+  background: var(--secondary-green);
+  transform: scale(1.05);
+}
+
+.addButton:disabled {
+  background: var(--gray-medium);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.ingredientsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.ingredientItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--light-green);
+  border: 1px solid var(--primary-green);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+}
+
+.ingredientName {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.removeButton {
+  width: 20px;
+  height: 20px;
+  background: var(--error);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all var(--transition-fast);
+}
+
+.removeButton:hover:not(:disabled) {
+  background: #d32f2f;
+  transform: scale(1.1);
+}
+
+.removeButton:disabled {
+  background: var(--gray-medium);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error {
+  color: var(--error);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+  display: block;
+}
+
+.submitError {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: var(--error);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  font-size: var(--font-size-sm);
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.submitSection {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--gray-medium);
+}
+
+.submitButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg) var(--spacing-xxl);
+  background: var(--primary-gradient);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: 56px;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: var(--spacing-md);
+  }
+  
+  .addMealCard {
+    border-radius: var(--radius-lg);
+  }
+  
+  .header {
+    padding: var(--spacing-lg);
+  }
+  
+  .form {
+    padding: var(--spacing-lg);
+  }
+  
+  .mealTypeGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .nutritionGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ingredientsInput {
+    flex-direction: column;
+  }
+  
+  .addButton {
+    width: 100%;
+    height: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: var(--spacing-sm);
+  }
+  
+  .header {
+    padding: var(--spacing-md);
+  }
+  
+  .form {
+    padding: var(--spacing-md);
+  }
+  
+  .title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .mealTypeGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .mealTypeCard {
+    padding: var(--spacing-md);
+  }
+  
+  .mealTypeIcon {
+    font-size: 1.5rem;
+  }
+  
+  .submitButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Animation */
+.addMealCard {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.section {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.section:nth-child(1) { animation-delay: 0.1s; }
+.section:nth-child(2) { animation-delay: 0.2s; }
+.section:nth-child(3) { animation-delay: 0.3s; }
+.section:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+

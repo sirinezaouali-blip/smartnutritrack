@@ -1,0 +1,746 @@
+/* Multiple Meal Planner Page Styles */
+.multipleMealPlanner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: var(--white);
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--gray-light);
+}
+
+.headerContent h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Input Section */
+.inputSection {
+  margin-bottom: 40px;
+}
+
+.inputCard {
+  background-color: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: var(--shadow-light);
+}
+
+.sectionTitle {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 24px 0;
+}
+
+.inputGrid {
+  display: grid;
+  gap: 24px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputLabel {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+/* Meal Type Selection */
+.mealTypeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.mealTypeButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 12px;
+  border: 2px solid var(--gray-medium);
+  border-radius: 12px;
+  background-color: var(--white);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 80px;
+}
+
+.mealTypeButton:hover {
+  border-color: var(--primary-green);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-light);
+}
+
+.mealTypeButton.active {
+  border-color: var(--meal-color);
+  background-color: var(--light-green);
+  box-shadow: var(--shadow-light);
+}
+
+.mealIcon {
+  font-size: 1.5rem;
+  margin-bottom: 6px;
+}
+
+.mealLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* Text Inputs */
+.textInput,
+.textArea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--gray-medium);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+  resize: vertical;
+}
+
+.textInput:focus,
+.textArea:focus {
+  outline: none;
+  border-color: var(--primary-green);
+}
+
+.textInput::placeholder,
+.textArea::placeholder {
+  color: var(--text-secondary);
+}
+
+/* Action Section */
+.actionSection {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.generateButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 32px;
+  background: var(--primary-gradient);
+  color: var(--white);
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-light);
+}
+
+.generateButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.generateButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Error Message */
+.errorMessage {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background-color: #ffebee;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  color: var(--error);
+  text-align: center;
+}
+
+/* Results Section */
+.resultsSection {
+  margin-bottom: 40px;
+}
+
+.resultsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.planNavigation {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.navButton {
+  padding: 8px;
+  border: 2px solid var(--gray-medium);
+  background-color: var(--white);
+  color: var(--text-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navButton:hover:not(:disabled) {
+  border-color: var(--primary-green);
+  color: var(--primary-green);
+}
+
+.navButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.planCounter {
+  font-weight: 500;
+  color: var(--text-primary);
+  min-width: 100px;
+  text-align: center;
+}
+
+/* Plan Card */
+.planCard {
+  background-color: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow-light);
+}
+
+.planHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.planTitle h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.planSummary {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.summaryItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.planMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.varietyScore,
+.nutritionScore {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  background-color: var(--light-green);
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+/* Meals Grid */
+.mealsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.mealCard {
+  background-color: var(--white);
+  border: 2px solid var(--gray-light);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.mealCard:hover {
+  border-color: var(--primary-green);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-light);
+}
+
+.mealCard.selected {
+  border-color: var(--primary-green);
+  background-color: var(--light-green);
+  box-shadow: var(--shadow-light);
+}
+
+.mealHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.mealType {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mealTypeLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.selectionIndicator {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--gray-medium);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--white);
+  transition: all 0.3s ease;
+}
+
+.mealCard.selected .selectionIndicator {
+  background-color: var(--primary-green);
+  border-color: var(--primary-green);
+  color: var(--white);
+}
+
+.mealContent h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+}
+
+.mealDescription {
+  color: var(--text-secondary);
+  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.mealNutrition {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.nutritionItem {
+  text-align: center;
+  padding: 6px;
+  background-color: var(--gray-light);
+  border-radius: 4px;
+}
+
+.nutritionValue {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary-green);
+}
+
+.nutritionUnit {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+
+.mealIngredients {
+  border-top: 1px solid var(--gray-light);
+  padding-top: 12px;
+}
+
+.mealIngredients h5 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+}
+
+.ingredientsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ingredient,
+.moreIngredients {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background-color: var(--gray-light);
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.moreIngredients {
+  font-style: italic;
+}
+
+/* Comparison Section */
+.comparisonSection {
+  margin-bottom: 30px;
+}
+
+.comparisonTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 20px 0;
+}
+
+.comparisonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.comparisonCard {
+  background-color: var(--white);
+  border: 2px solid var(--gray-light);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.comparisonCard:hover {
+  border-color: var(--primary-green);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-light);
+}
+
+.comparisonCard.active {
+  border-color: var(--primary-green);
+  background-color: var(--light-green);
+  box-shadow: var(--shadow-light);
+}
+
+.comparisonHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.comparisonHeader h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.planBadges {
+  display: flex;
+  gap: 6px;
+}
+
+.currentBadge {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--white);
+  background-color: var(--primary-green);
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+.comparisonStats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.stat {
+  text-align: center;
+}
+
+.statValue {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-green);
+}
+
+.statLabel {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.planPreview {
+  border-top: 1px solid var(--gray-light);
+  padding-top: 12px;
+}
+
+.previewMeal {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.previewIcon {
+  font-size: 0.9rem;
+}
+
+.previewName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.moreMeals {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+  padding: 4px 0;
+}
+
+/* Results Actions */
+.resultsActions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.addMealsButton,
+.resetButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.addMealsButton {
+  background: var(--primary-gradient);
+  color: var(--white);
+  box-shadow: var(--shadow-light);
+}
+
+.addMealsButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.addMealsButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.resetButton {
+  background-color: var(--white);
+  color: var(--text-primary);
+  border: 2px solid var(--gray-medium);
+}
+
+.resetButton:hover {
+  border-color: var(--primary-green);
+  color: var(--primary-green);
+}
+
+/* Tips Section */
+.tipsSection {
+  margin-top: 50px;
+  padding-top: 30px;
+  border-top: 1px solid var(--gray-light);
+}
+
+.tipsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.tipCard {
+  background-color: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.tipCard:hover {
+  box-shadow: var(--shadow-light);
+}
+
+.tipIcon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.tipTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.tipDescription {
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .multipleMealPlanner {
+    padding: 15px;
+  }
+
+  .headerContent h1 {
+    font-size: 2rem;
+  }
+
+  .inputCard {
+    padding: 20px;
+  }
+
+  .mealTypeGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mealsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .comparisonGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .planHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .planMeta {
+    align-items: flex-start;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .resultsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .planNavigation {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .resultsActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .addMealsButton,
+  .resetButton {
+    justify-content: center;
+  }
+
+  .tipsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .multipleMealPlanner {
+    padding: 10px;
+  }
+
+  .headerContent h1 {
+    font-size: 1.8rem;
+  }
+
+  .mealTypeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .mealNutrition {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .nutritionItem {
+    padding: 4px;
+  }
+
+  .nutritionValue {
+    font-size: 0.8rem;
+  }
+
+  .nutritionUnit {
+    font-size: 0.65rem;
+  }
+
+  .comparisonStats {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .stat {
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+  }
+}

@@ -1,0 +1,520 @@
+.mealPlanner {
+  min-height: 100vh;
+  background-color: var(--gray-light);
+  padding: var(--spacing-lg);
+}
+
+.loadingContainer,
+.errorContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.errorCard {
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xxl);
+  text-align: center;
+  box-shadow: var(--shadow-medium);
+  max-width: 400px;
+}
+
+.errorCard h2 {
+  color: var(--error);
+  margin-bottom: var(--spacing-md);
+}
+
+.errorCard p {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.retryButton {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--primary-green);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.retryButton:hover {
+  background: var(--secondary-green);
+  transform: translateY(-1px);
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-light);
+}
+
+.headerContent {
+  flex: 1;
+}
+
+.title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.scanButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--primary-gradient);
+  color: var(--white);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.scanButton:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+/* Section Styles */
+.sectionTitle {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+.plannerTypesSection {
+  margin-bottom: var(--spacing-xl);
+}
+
+.plannerTypesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.plannerTypeCard {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--gray-medium);
+  text-decoration: none;
+  color: inherit;
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.plannerTypeCard:hover {
+  border-color: var(--primary-green);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-medium);
+}
+
+.typeIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--white);
+}
+
+.colorPrimary {
+  background: var(--primary-gradient);
+}
+
+.colorSecondary {
+  background: linear-gradient(135deg, #2196F3, #1976D2);
+}
+
+.colorTertiary {
+  background: linear-gradient(135deg, #FF9800, #F57C00);
+}
+
+.typeContent {
+  flex: 1;
+}
+
+.typeTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.typeDescription {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.typeFeatures {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.typeFeature {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.featureBullet {
+  color: var(--primary-green);
+  font-weight: bold;
+}
+
+.typeAction {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--gray-medium);
+}
+
+.actionText {
+  font-weight: 600;
+  color: var(--primary-green);
+}
+
+.actionArrow {
+  font-size: var(--font-size-lg);
+  color: var(--primary-green);
+  transition: transform var(--transition-fast);
+}
+
+.plannerTypeCard:hover .actionArrow {
+  transform: translateX(4px);
+}
+
+/* Stats Section */
+.statsSection {
+  margin-bottom: var(--spacing-xl);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.statCard {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  box-shadow: var(--shadow-light);
+  transition: transform var(--transition-fast);
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+}
+
+.statIcon {
+  width: 50px;
+  height: 50px;
+  background: var(--light-green);
+  color: var(--primary-green);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.statContent {
+  flex: 1;
+}
+
+.statValue {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.statLabel {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Upcoming Section */
+.upcomingSection {
+  margin-bottom: var(--spacing-xl);
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-light);
+}
+
+.upcomingList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.upcomingDay {
+  padding: var(--spacing-lg);
+  background: var(--light-green);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--primary-green);
+}
+
+.dayHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.dayTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.mealCount {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  background: var(--white);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+}
+
+.dayMeals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.upcomingMeal {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--white);
+  border-radius: var(--radius-md);
+}
+
+.mealIcon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.mealInfo {
+  flex: 1;
+}
+
+.mealName {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+.mealCalories {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.moreMeals {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  background: var(--gray-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Tips Section */
+.tipsSection {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-light);
+}
+
+.tipsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.tipCard {
+  text-align: center;
+  padding: var(--spacing-lg);
+}
+
+.tipIcon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.tipTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.tipDescription {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mealPlanner {
+    padding: var(--spacing-md);
+  }
+  
+  .header {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    align-items: stretch;
+  }
+  
+  .headerActions {
+    justify-content: center;
+  }
+  
+  .plannerTypesGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .dayMeals {
+    grid-template-columns: 1fr;
+  }
+  
+  .tipsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .mealPlanner {
+    padding: var(--spacing-sm);
+  }
+  
+  .header {
+    padding: var(--spacing-md);
+  }
+  
+  .title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .plannerTypeCard {
+    padding: var(--spacing-lg);
+  }
+  
+  .typeIcon {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+  
+  .upcomingDay {
+    padding: var(--spacing-md);
+  }
+  
+  .dayHeader {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+  }
+  
+  .mealCount {
+    align-self: flex-end;
+  }
+}
+
+/* Animation */
+.mealPlanner {
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.plannerTypeCard,
+.statCard,
+.tipCard {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.plannerTypeCard:nth-child(1) { animation-delay: 0.1s; }
+.plannerTypeCard:nth-child(2) { animation-delay: 0.2s; }
+.plannerTypeCard:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+

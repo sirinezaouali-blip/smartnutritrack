@@ -1,0 +1,85 @@
+.privacyContainer {
+  min-height: 100vh;
+  background: var(--background-color);
+  padding: 20px;
+}
+
+.privacyContent {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--card-background);
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: var(--shadow);
+}
+
+.title {
+  color: var(--text-primary);
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.section {
+  margin-bottom: 30px;
+}
+
+.section h2 {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 8px;
+}
+
+.section h3 {
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 20px 0 10px 0;
+}
+
+.section p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.section ul {
+  color: var(--text-secondary);
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+.section li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.contactInfo {
+  background: var(--background-color);
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-color);
+  margin-top: 15px;
+}
+
+@media (max-width: 768px) {
+  .privacyContainer {
+    padding: 10px;
+  }
+
+  .privacyContent {
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .section h2 {
+    font-size: 1.25rem;
+  }
+}

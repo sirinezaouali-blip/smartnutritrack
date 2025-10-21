@@ -1,0 +1,302 @@
+.cameraCapture {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+.cameraOverlay {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cameraContainer {
+  width: 100%;
+  max-width: 800px;
+  height: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cameraHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: rgba(0, 0, 0, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cameraTitle {
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.cameraView {
+  flex: 1;
+  position: relative;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.videoElement {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cameraGuide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.guideFrame {
+  width: 80%;
+  max-width: 400px;
+  aspect-ratio: 1;
+  border: 3px solid rgba(76, 175, 80, 0.8);
+  border-radius: 12px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.guideFrame::before,
+.guideFrame::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #4CAF50;
+}
+
+.guideFrame::before {
+  top: -3px;
+  left: -3px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.guideFrame::after {
+  bottom: -3px;
+  right: -3px;
+  border-left: none;
+  border-top: none;
+}
+
+.guideText {
+  color: #fff;
+  font-size: 1rem;
+  margin-top: 2rem;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+}
+
+.cameraControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.controlButton {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.2s;
+  min-width: 80px;
+}
+
+.controlButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.controlButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.controlButton svg {
+  font-size: 1.5rem;
+}
+
+.controlButton span {
+  font-size: 0.875rem;
+}
+
+.captureButton {
+  background: #4CAF50;
+  border: 4px solid #fff;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.captureButton:hover:not(:disabled) {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+}
+
+.captureButton:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.captureButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.captureButtonInner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.captureButtonInner svg {
+  font-size: 2rem;
+}
+
+.cameraError {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+  color: #fff;
+}
+
+.errorIcon {
+  font-size: 4rem;
+  color: #ff5252;
+  margin-bottom: 1rem;
+}
+
+.cameraError p {
+  margin: 1rem 0;
+  font-size: 1.125rem;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+.retryButton {
+  background: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.2s;
+}
+
+.retryButton:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .cameraContainer {
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .cameraHeader {
+    padding: 1rem;
+  }
+
+  .cameraTitle {
+    font-size: 1.125rem;
+  }
+
+  .cameraControls {
+    padding: 1.5rem 1rem;
+  }
+
+  .controlButton {
+    padding: 0.5rem 1rem;
+    min-width: 70px;
+  }
+
+  .controlButton span {
+    font-size: 0.75rem;
+  }
+
+  .captureButton {
+    width: 70px;
+    height: 70px;
+  }
+
+  .captureButtonInner svg {
+    font-size: 1.75rem;
+  }
+
+  .guideText {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+  }
+}

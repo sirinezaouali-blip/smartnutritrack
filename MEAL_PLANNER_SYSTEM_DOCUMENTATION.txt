@@ -1,0 +1,517 @@
+================================================================================
+🍔 McDONALD'S MEAL PLANNER RAG SYSTEM - COMPREHENSIVE DOCUMENTATION
+================================================================================
+
+CREATED: [Current Date]
+VERSION: 1.0.0
+AUTHOR: BLACKBOXAI Assistant
+
+================================================================================
+1. SYSTEM OVERVIEW AND PURPOSE
+================================================================================
+
+PURPOSE:
+--------
+The McDonald's Meal Planner RAG (Retrieval-Augmented Generation) system is an AI-powered
+meal planning application that helps users create personalized meal plans using McDonald's
+menu items. The system considers user preferences, caloric requirements, and nutritional
+goals to suggest appropriate McDonald's food combinations for breakfast, lunch, dinner,
+and snacks.
+
+KEY FEATURES:
+- AI-powered meal request parsing using Ollama LLM (llama3.1)
+- Semantic validation with sentence transformers
+- Vector database search for McDonald's menu items
+- Calorie-aware meal planning
+- RESTful API interfaces (Flask Python & Express.js)
+- React.js frontend component
+- Mobile app integration support
+
+ARCHITECTURE TYPE:
+------------------
+RAG (Retrieval-Augmented Generation) system combining:
+- Vector embeddings for semantic search
+- Large Language Model for intelligent parsing
+- ChromaDB vector database for menu storage
+- Modular pipeline architecture
+
+================================================================================
+2. SYSTEM PIPELINE AND WORKFLOW
+================================================================================
+
+PIPELINE STAGES:
+----------------
+1. INPUT PARSING STAGE
+2. CALORIC CALCULATION STAGE
+3. FOOD RETRIEVAL STAGE
+4. MEAL PLAN GENERATION STAGE
+5. OUTPUT FORMATTING STAGE
+
+DETAILED PIPELINE FLOW:
+----------------------
+User Input → InputParser → CalorieCalculator → FoodRetriever → MealPlanner → Final Output
+
+================================================================================
+3. CORE COMPONENTS AND MODULES
+================================================================================
+
+3.1 MAIN SYSTEM FILES
+---------------------
+
+meal_system.py
+--------------
+PURPOSE: Main orchestrator coordinating all meal planning components
+FUNCTIONS:
+- __init__(db_location, embeddings, documents, ids, add_documents)
+  - Initializes vector store connection
+  - Sets up food retriever, calorie calculator, and meal planner
+- create_meal_plan(user_profile, user_input)
+  - Orchestrates the complete meal planning pipeline
+  - Returns dict with parsed_input, caloric_plan, candidates, final_plan
+
+parsers.py
+----------
+PURPOSE: Intelligent parsing of user meal requests using LLM and semantic validation
+FUNCTIONS:
+- __init__(user_profile)
+  - Initializes Ollama LLM model
+  - Sets up semantic validation with sentence transformers
+- parse(user_input)
+  - Main parsing function using LLM prompt engineering
+  - Applies semantic validation for meal consumption detection
+  - Returns ParsedInput object
+- _validate_parsed_data_semantic()
+  - Uses embeddings to validate and enhance parsed data
+- _check_meal_consumed_semantic()
+  - Semantic similarity checking for meal consumption patterns
+
+calorie_calculator.py
+---------------------
+PURPOSE: Handles all caloric calculations and meal distribution logic
+FUNCTIONS:
+- calculate_base_allocation(user_profile)
+  - Calculates default 20/35/35/10% distribution across meals
+- calculate_remaining_calories(user_profile, parsed_input)
+  - Determines consumed vs remaining calories
+  - Redistributes calories proportionally among remaining meals
+  - Returns CaloricPlan object
+
+food_retriever.py
+-----------------
+PURPOSE: Retrieves relevant McDonald's menu items from vector database
+FUNCTIONS:
+- __init__(vector_store)
+  - Initializes Chroma vector store connection
+- retrieve_candidates(parsed_input, caloric_plan)
+  - Searches for suitable items per meal type
+  - Filters by caloric constraints
+  - Returns dict of FoodCandidate lists per meal
+
+meal_planner.py
+---------------
+PURPOSE: Generates final human-readable meal plans using LLM
+FUNCTIONS:
+- __init__()
+  - Initializes Ollama LLM for plan generation
+- generate_plan(user_profile, parsed_input, caloric_plan, candidates)
+  - Creates comprehensive meal plan with LLM
+  - Formats output with subtotals and totals
+  - Returns formatted string plan
+
+models.py
+---------
+PURPOSE: Data models and structures for type safety
+CLASSES:
+- UserProfile: User nutritional profile (bmi, bmr, tdee, target_calories, goals)
+- ParsedInput: Parsed user request (already_eaten, meal_requests, meals_to_plan, user_intent)
+- CaloricPlan: Caloric distribution plan (breakfast/lunch/dinner/snacks allocations)
+- FoodCandidate: Individual food item (content, calories, meal_type, search_query)
+
+config.py
+---------
+PURPOSE: System configuration and constants
+KEY CONSTANTS:
+- LLM_MODEL = "llama3.1"
+- COLLECTION_NAME = "mcdonalds_foods"
+- CALORIE_DISTRIBUTION = {"breakfast": 0.20, "lunch": 0.35, "dinner": 0.35, "snacks": 0.10}
+- MCDONALDS_TERMS: Search terms for each meal type
+- RETRIEVAL_K = 10, MAX_CANDIDATES_PER_MEAL = 6
+- CALORIE_FLEXIBILITY_FACTOR = 1.5
+
+setup_database.py
+-----------------
+PURPOSE: One-time vector database initialization
+FUNCTIONS:
+- setup_vector_store()
+  - Loads McDonald's menu CSV
+  - Creates ChromaDB vector store
+  - Generates embeddings for all menu items
+
+================================================================================
+4. API INTERFACES
+================================================================================
+
+4.1 FLASK API (api_server.py)
+------------------------------
+
+ENDPOINTS:
+- GET /health
+  - Returns system status and initialization state
+- POST /api/meal-plan
+  - Creates meal plan from user input
+- POST /api/create-user-profile
+  - Creates custom user profile
+- POST /api/menu-search
+  - Searches menu items
+- GET /api/user-profile/default
+  - Returns default user profile
+
+4.2 EXPRESS.JS API (express_meal_planner_api.js)
+-------------------------------------------------
+
+ENDPOINTS:
+- GET /api/health
+  - System health check
+- POST /api/meal-plan
+  - Meal plan creation (spawns Python process)
+- POST /api/menu-search
+  - Menu search functionality
+
+================================================================================
+5. DATA STRUCTURES AND VARIABLES
+================================================================================
+
+5.1 INPUT VARIABLES
+-------------------
+
+UserProfile:
+- bmi: float (Body Mass Index)
+- category: str (e.g., "Normal weight", "Overweight")
+- bmr: int (Basal Metabolic Rate in kcal)
+- tdee: int (Total Daily Energy Expenditure in kcal)
+- target_calories: int (Daily caloric target)
+- goals: str (e.g., "maintain weight", "lose weight")
+
+User Input (String):
+- Natural language meal requests
+- Examples: "already had breakfast, need lunch and dinner ideas"
+- Examples: "I want chicken for lunch, pizza for dinner"
+
+5.2 INTERNAL DATA STRUCTURES
+----------------------------
+
+ParsedInput:
+- already_eaten: Dict[str, Any]
+  - Keys: "breakfast", "lunch", "dinner", "snacks", "total_calories_consumed"
+  - Values: List of eaten items or None
+- meal_requests: Dict[str, Optional[str]]
+  - Keys: "breakfast", "lunch", "dinner", "snacks"
+  - Values: Specific food requests or None
+- meals_to_plan: List[str]
+  - List of meals that need planning
+- user_intent: str
+  - Summary of user's request
+
+CaloricPlan:
+- breakfast/lunch/dinner/snacks: Dict[str, int]
+  - Keys: "calories", "percentage"
+  - Values: Allocated calories and percentage
+- consumed_calories: int
+- remaining_target: int
+- remaining_meals: List[str]
+
+FoodCandidate:
+- content: str (Full menu item description)
+- calories: int or "unknown"
+- meal_type: str ("breakfast", "lunch", "dinner", "snacks")
+- search_query: str (Query used to find this item)
+
+5.3 OUTPUT VARIABLES
+--------------------
+
+Meal Plan Result (Dict):
+- success: bool
+- user_input: str
+- user_profile: Dict (UserProfile data)
+- parsed_input: Dict (ParsedInput data)
+- caloric_plan: Dict (CaloricPlan data)
+- candidates_summary: Dict[str, int] (Count of candidates per meal)
+- final_plan: str (Formatted meal plan text)
+
+================================================================================
+6. DEPENDENCIES AND REQUIREMENTS
+================================================================================
+
+6.1 PYTHON DEPENDENCIES (requirements.txt)
+------------------------------------------
+- langchain-community>=0.0.20
+- langchain-core>=0.1.30
+- langchain-ollama>=0.1.0
+- chromadb>=0.4.0
+
+6.2 API SERVER DEPENDENCIES (requirements_api.txt)
+--------------------------------------------------
+- flask>=2.3.0
+- flask-cors>=4.0.0
+- python-dotenv>=1.0.0
+- gunicorn>=21.2.0
+- [All Python dependencies above]
+
+6.3 NODE.JS DEPENDENCIES (backend_package.json)
+-----------------------------------------------
+- express: ^4.18.2
+- cors: ^2.8.5
+- dotenv: ^16.3.1
+
+6.4 EXTERNAL REQUIREMENTS
+-------------------------
+- Ollama running with llama3.1 model
+- SentenceTransformer models (all-MiniLM-L6-v2)
+- McDonald's menu CSV file (menu.csv)
+
+================================================================================
+7. CONFIGURATION PARAMETERS
+================================================================================
+
+7.1 LLM CONFIGURATION
+---------------------
+- Model: llama3.1 (via Ollama)
+- Temperature: Default (not explicitly set)
+- Max tokens: Default
+
+7.2 VECTOR DATABASE CONFIGURATION
+---------------------------------
+- Database: ChromaDB
+- Collection: mcdonalds_foods
+- Embedding Model: all-MiniLM-L6-v2
+- Embedding Dimensions: 384
+
+7.3 RETRIEVAL CONFIGURATION
+---------------------------
+- Retrieval K: 10 (documents retrieved per search)
+- Max Candidates Per Meal: 6
+- Calorie Flexibility Factor: 1.5 (allow 150% of target calories)
+
+7.4 CALORIC DISTRIBUTION (Default)
+----------------------------------
+- Breakfast: 20% of daily calories
+- Lunch: 35% of daily calories
+- Dinner: 35% of daily calories
+- Snacks: 10% of daily calories
+
+================================================================================
+8. SYSTEM WORKFLOW DETAILS
+================================================================================
+
+8.1 INITIALIZATION PROCESS
+--------------------------
+1. setup_database.py creates ChromaDB vector store
+2. Loads menu.csv and creates embeddings
+3. Stores documents with metadata
+
+8.2 MEAL PLANNING PROCESS
+-------------------------
+1. User Input Parsing:
+   - LLM analyzes natural language input
+   - Semantic validation checks for meal consumption
+   - Extracts specific food requests
+
+2. Calorie Calculation:
+   - Estimates calories for consumed meals
+   - Calculates remaining caloric budget
+   - Redistributes proportionally
+
+3. Food Retrieval:
+   - Searches vector database for each meal type
+   - Filters by caloric constraints
+   - Ranks by calorie proximity to target
+
+4. Plan Generation:
+   - LLM creates human-readable meal plan
+   - Includes portion sizes and subtotals
+   - Calculates grand totals
+
+8.3 API REQUEST FLOW
+--------------------
+1. Client sends POST /api/meal-plan
+2. Input validation
+3. Python subprocess execution
+4. Result parsing and formatting
+5. JSON response to client
+
+================================================================================
+9. ERROR HANDLING AND EDGE CASES
+================================================================================
+
+9.1 COMMON ERROR SCENARIOS
+---------------------------
+- Vector store not initialized
+- Ollama model not available
+- Invalid user input format
+- Caloric calculations exceeding limits
+- No suitable menu items found
+
+9.2 FALLBACK MECHANISMS
+------------------------
+- Rule-based parsing if semantic validation fails
+- Default calorie estimates if specific data missing
+- Fallback to basic meal suggestions if LLM fails
+
+9.3 VALIDATION RULES
+--------------------
+- Calorie consumption cannot exceed daily target
+- At least one meal must be planned
+- Menu items must exist in database
+- User profile data must be reasonable ranges
+
+================================================================================
+10. INTEGRATION AND USAGE EXAMPLES
+================================================================================
+
+10.1 PYTHON API USAGE
+---------------------
+```python
+from meal_system import MealPlanningSystem
+from models import UserProfile
+
+# Initialize system
+meal_system = MealPlanningSystem(db_location="./chroma_db", embeddings=embeddings)
+
+# Create user profile
+user_profile = UserProfile.create_default()
+
+# Create meal plan
+result = meal_system.create_meal_plan(user_profile, "I want chicken nuggets for lunch")
+print(result["final_plan"])
+```
+
+10.2 REST API USAGE
+--------------------
+```bash
+# Create meal plan
+curl -X POST http://localhost:5000/api/meal-plan \
+  -H "Content-Type: application/json" \
+  -d '{"user_input": "already had breakfast, need lunch ideas"}'
+
+# Search menu
+curl -X POST http://localhost:5000/api/menu-search \
+  -H "Content-Type: application/json" \
+  -d '{"query": "chicken nuggets", "limit": 5}'
+```
+
+10.3 REACT COMPONENT USAGE
+-------------------------
+```jsx
+import MealPlanner from './components/MealPlanner';
+
+function App() {
+  return (
+    <div className="App">
+      <MealPlanner />
+    </div>
+  );
+}
+```
+
+================================================================================
+11. PERFORMANCE CHARACTERISTICS
+================================================================================
+
+11.1 SYSTEM PERFORMANCE
+-----------------------
+- First request: 10-15 seconds (RAG initialization)
+- Subsequent requests: 2-5 seconds
+- Memory usage: ~2-4GB RAM
+- Storage: ~500MB for vector database
+
+11.2 BOTTLENECKS
+----------------
+- LLM inference time (Ollama)
+- Vector similarity search
+- Embedding generation during setup
+
+11.3 OPTIMIZATION OPPORTUNITIES
+-------------------------------
+- Pre-computed embeddings
+- Caching of frequent queries
+- Batch processing for multiple users
+- Model quantization for faster inference
+
+================================================================================
+12. EXTENSIBILITY AND CUSTOMIZATION
+================================================================================
+
+12.1 ADDING NEW MENU ITEMS
+--------------------------
+1. Update menu.csv with new items
+2. Run setup_database.py to recreate vector store
+3. Update MCDONALDS_TERMS in config.py if needed
+
+12.2 MODIFYING CALORIC DISTRIBUTION
+-----------------------------------
+- Edit CALORIE_DISTRIBUTION in config.py
+- Ensure values sum to 1.0 (100%)
+
+12.3 CHANGING LLM MODEL
+-----------------------
+- Update LLM_MODEL in config.py
+- Ensure Ollama has the new model available
+
+12.4 ADDING NEW MEAL TYPES
+--------------------------
+- Update all relevant dictionaries in config.py
+- Modify data models in models.py
+- Update parsing logic in parsers.py
+
+================================================================================
+13. TROUBLESHOOTING GUIDE
+================================================================================
+
+13.1 COMMON ISSUES
+------------------
+- "Vector store not found": Run setup_database.py
+- "Ollama connection failed": Ensure Ollama is running
+- "No candidates found": Check menu.csv data quality
+- "Calorie calculation errors": Verify user profile data
+
+13.2 DEBUGGING STEPS
+--------------------
+1. Check system health endpoint
+2. Verify vector store exists
+3. Test individual components
+4. Check Ollama model availability
+5. Validate input data formats
+
+13.3 LOGGING AND MONITORING
+---------------------------
+- Console logging throughout pipeline
+- Health check endpoints
+- Error response details
+- Performance timing in API responses
+
+================================================================================
+14. FUTURE ENHANCEMENTS
+================================================================================
+
+14.1 PLANNED FEATURES
+---------------------
+- User preference learning
+- Nutritional macro tracking
+- Multi-day meal planning
+- Restaurant chain expansion
+- Mobile app native integration
+
+14.2 TECHNICAL IMPROVEMENTS
+---------------------------
+- Async processing for better performance
+- Database connection pooling
+- API rate limiting
+- Comprehensive error handling
+- Unit test coverage
+
+================================================================================
+END OF DOCUMENTATION
+================================================================================
+
+For questions or support, refer to the individual source code files for detailed
+implementation specifics and inline documentation.

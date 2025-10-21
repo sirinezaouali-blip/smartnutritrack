@@ -1,0 +1,365 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  background: var(--primary-gradient);
+}
+
+.verificationCard,
+.successCard {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-heavy);
+  padding: var(--spacing-xxl);
+  text-align: center;
+}
+
+.header {
+  margin-bottom: var(--spacing-xxl);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.logoIcon {
+  font-size: 2.5rem;
+}
+
+.logoText {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--primary-green);
+  margin: 0;
+}
+
+.title {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: var(--font-size-base);
+}
+
+.email {
+  font-weight: 600;
+  color: var(--primary-green);
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: var(--font-size-base);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.codeContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.label {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+}
+
+.codeInputs {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.codeInput {
+  width: 50px;
+  height: 60px;
+  border: 2px solid var(--gray-medium);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  text-align: center;
+  background-color: var(--white);
+  transition: all var(--transition-fast);
+}
+
+.codeInput:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+  outline: none;
+}
+
+.codeInput:disabled {
+  background-color: var(--gray-light);
+  cursor: not-allowed;
+}
+
+.codeInput.inputError {
+  border-color: var(--error);
+}
+
+.codeInput.inputError:focus {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+}
+
+.error {
+  color: var(--error);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.submitButton {
+  width: 100%;
+  padding: var(--spacing-md);
+  background: var(--primary-gradient);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  min-height: 48px;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submitError {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: var(--error);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.resendSection {
+  margin-top: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.resendText {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+.resendButton {
+  background: none;
+  border: none;
+  color: var(--primary-green);
+  font-weight: 600;
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.resendButton:hover:not(:disabled) {
+  background-color: var(--light-green);
+  color: var(--secondary-green);
+}
+
+.resendButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.resendMessage {
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.resendMessage.success {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.resendMessage.error {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: var(--error);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+}
+
+.footer {
+  margin-top: var(--spacing-xl);
+  text-align: center;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  font-size: var(--font-size-sm);
+}
+
+.backButton:hover {
+  color: var(--primary-green);
+  background-color: var(--light-green);
+}
+
+/* Success State */
+.successCard {
+  animation: successSlideIn 0.5s ease-out;
+}
+
+.successIcon {
+  font-size: 4rem;
+  color: var(--success);
+  margin-bottom: var(--spacing-lg);
+  animation: successPulse 1s ease-in-out;
+}
+
+.successTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.successMessage {
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: var(--font-size-base);
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .container {
+    padding: var(--spacing-sm);
+  }
+  
+  .verificationCard,
+  .successCard {
+    padding: var(--spacing-lg);
+  }
+  
+  .header {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .logoText {
+    font-size: var(--font-size-xl);
+  }
+  
+  .title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .codeInput {
+    width: 45px;
+    height: 55px;
+    font-size: var(--font-size-lg);
+  }
+  
+  .codeInputs {
+    gap: var(--spacing-xs);
+  }
+}
+
+/* Animations */
+.verificationCard {
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes successSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes successPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Code Input Animation */
+.codeInput {
+  animation: inputFocus 0.2s ease-out;
+}
+
+@keyframes inputFocus {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+
+
+

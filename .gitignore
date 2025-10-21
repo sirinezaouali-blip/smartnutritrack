@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Flask instance
+instance/
+
+# Environment variables
+.env
+.env.local
+
+# Dependencies
+node_modules/
+
+# Production
+build/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Large/unnecessary folders for lean repo
+CNN/
+chroma_db/
+Meal Planner/
+utils/
+
+# Model files
+*.h5
+*.keras
+*.weights.h5
+*.bin
+*.sqlite3
+
+# Data files
+meal_data.csv
+menu.csv
+
+# Documentation and guides (optional, uncomment if not needed)
+# ANALYTICS_CHART_FIX.md
+# CAMERA_FIX_GUIDE.md
+# FIXES_APPLIED.md
+# MEAL_PLANNER_SYSTEM_DOCUMENTATION.txt
+# QUICK_START_GUIDE.md
+# README.txt
+# SMARTNUTRITRACK_FEATURES_DOCUMENTATION.txt
+# structure.txt
+# TODO.md

@@ -1,0 +1,106 @@
+.progressChart {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.mainChart {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.macrosChart {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chartTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 1rem 0;
+}
+
+.chartWrapper {
+  position: relative;
+  height: 250px;
+  width: 100%;
+}
+
+.noData {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+  color: #757575;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.noData p {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.noData small {
+  font-size: 0.875rem;
+  color: #757575;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .progressChart {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .chartWrapper {
+    height: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .chartWrapper {
+    height: 200px;
+  }
+
+  .mainChart,
+  .macrosChart {
+    padding: 1rem;
+  }
+
+  .chartTitle {
+    font-size: 0.9375rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .chartWrapper {
+    height: 180px;
+  }
+
+  .progressChart {
+    gap: 1rem;
+  }
+
+  .mainChart,
+  .macrosChart {
+    padding: 0.875rem;
+  }
+
+  .chartTitle {
+    font-size: 0.875rem;
+  }
+}

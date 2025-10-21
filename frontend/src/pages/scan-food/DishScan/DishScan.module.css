@@ -1,0 +1,526 @@
+/* Dish Scan Page Styles */
+.dishScan {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: var(--white);
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--gray-light);
+}
+
+.headerContent h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Upload Section */
+.uploadSection {
+  margin-bottom: 40px;
+}
+
+.uploadCard {
+  background-color: var(--white);
+  border: 2px dashed var(--gray-medium);
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.uploadCard:hover {
+  border-color: var(--primary-green);
+  background-color: var(--light-green);
+}
+
+.uploadPrompt {
+  margin-bottom: 30px;
+}
+
+.uploadIcon {
+  font-size: 4rem;
+  color: var(--primary-green);
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.uploadTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.uploadDescription {
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.uploadOptions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.uploadButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background: var(--primary-gradient);
+  color: var(--white);
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-light);
+}
+
+.uploadButton:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+/* Image Preview */
+.imagePreview {
+  position: relative;
+}
+
+.previewImage {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: var(--shadow-light);
+  margin-bottom: 20px;
+}
+
+.previewActions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.analyzeButton,
+.resetButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.analyzeButton {
+  background: var(--primary-gradient);
+  color: var(--white);
+  box-shadow: var(--shadow-light);
+}
+
+.analyzeButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.analyzeButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.resetButton {
+  background-color: var(--white);
+  color: var(--text-primary);
+  border: 2px solid var(--gray-medium);
+}
+
+.resetButton:hover:not(:disabled) {
+  border-color: var(--primary-green);
+  color: var(--primary-green);
+}
+
+.resetButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Error Message */
+.errorMessage {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 12px 16px;
+  background-color: #ffebee;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  color: var(--error);
+  font-size: 0.95rem;
+}
+
+/* Results Section */
+.resultsSection {
+  margin-bottom: 40px;
+}
+
+.resultsCard {
+  background-color: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-light);
+}
+
+.resultsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.resultsTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.confidenceScore {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: var(--light-green);
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.dishInfo {
+  margin-bottom: 24px;
+}
+
+.dishName h3 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.dishCategory {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 1rem;
+}
+
+.nutritionGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+  padding: 20px;
+  background-color: var(--gray-light);
+  border-radius: 12px;
+}
+
+.nutritionItem {
+  text-align: center;
+}
+
+.nutritionValue {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary-green);
+  margin-bottom: 4px;
+}
+
+.nutritionLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.nutritionUnit {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.ingredientsSection,
+.allergensSection {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--gray-light);
+}
+
+.ingredientsSection h4,
+.allergensSection h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+}
+
+.ingredientsList,
+.allergensList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ingredient,
+.allergen {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  background-color: var(--white);
+  border: 1px solid var(--gray-medium);
+  padding: 6px 10px;
+  border-radius: 16px;
+}
+
+.allergen {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+  color: #e65100;
+}
+
+.resultsActions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-top: 24px;
+  border-top: 1px solid var(--gray-light);
+}
+
+.addMealButton,
+.scanAnotherButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.addMealButton {
+  background: var(--primary-gradient);
+  color: var(--white);
+  box-shadow: var(--shadow-light);
+}
+
+.addMealButton:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.scanAnotherButton {
+  background-color: var(--white);
+  color: var(--text-primary);
+  border: 2px solid var(--gray-medium);
+}
+
+.scanAnotherButton:hover {
+  border-color: var(--primary-green);
+  color: var(--primary-green);
+}
+
+/* Tips Section */
+.tipsSection {
+  margin-top: 50px;
+  padding-top: 30px;
+  border-top: 1px solid var(--gray-light);
+}
+
+.sectionTitle {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 24px 0;
+  text-align: center;
+}
+
+.tipsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.tipCard {
+  background-color: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.tipCard:hover {
+  box-shadow: var(--shadow-light);
+}
+
+.tipIcon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.tipTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.tipDescription {
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dishScan {
+    padding: 15px;
+  }
+
+  .headerContent h1 {
+    font-size: 2rem;
+  }
+
+  .uploadCard {
+    padding: 30px 20px;
+  }
+
+  .uploadOptions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .uploadButton {
+    width: 100%;
+    max-width: 250px;
+    justify-content: center;
+  }
+
+  .nutritionGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .nutritionValue {
+    font-size: 1.5rem;
+  }
+
+  .resultsCard {
+    padding: 20px;
+  }
+
+  .resultsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .resultsActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .addMealButton,
+  .scanAnotherButton {
+    justify-content: center;
+  }
+
+  .tipsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .dishScan {
+    padding: 10px;
+  }
+
+  .headerContent h1 {
+    font-size: 1.8rem;
+  }
+
+  .uploadCard {
+    padding: 20px 15px;
+  }
+
+  .uploadIcon {
+    font-size: 3rem;
+  }
+
+  .uploadTitle {
+    font-size: 1.3rem;
+  }
+
+  .previewImage {
+    max-width: 100%;
+  }
+
+  .previewActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .analyzeButton,
+  .resetButton {
+    justify-content: center;
+  }
+
+  .nutritionGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .nutritionValue {
+    font-size: 1.3rem;
+  }
+
+  .ingredientsList,
+  .allergensList {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ingredient,
+  .allergen {
+    align-self: flex-start;
+  }
+}

@@ -1,0 +1,504 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  background: var(--primary-gradient);
+}
+
+.formCard {
+  width: 100%;
+  max-width: 800px;
+  background-color: var(--white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-heavy);
+  padding: var(--spacing-xxl);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.progressIndicator {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.progressBar {
+  flex: 1;
+  height: 8px;
+  background-color: var(--gray-medium);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--primary-gradient);
+  border-radius: var(--radius-sm);
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.headerIcon {
+  width: 60px;
+  height: 60px;
+  background: var(--primary-gradient);
+  color: var(--white);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin: 0 auto var(--spacing-lg) auto;
+}
+
+.title {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+}
+
+/* Diet Type Grid */
+.dietGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.dietOption {
+  cursor: pointer;
+}
+
+.dietCard {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border: 2px solid var(--gray-medium);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-fast);
+  background-color: var(--white);
+  height: 100%;
+}
+
+.dietCard:hover {
+  border-color: var(--primary-green);
+  background-color: var(--light-green);
+}
+
+.dietOption input[type="radio"]:checked + .dietCard {
+  border-color: var(--primary-green);
+  background-color: var(--light-green);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.dietIcon {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.dietContent {
+  flex: 1;
+}
+
+.dietTitle {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.dietDescription {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.radioInput {
+  display: none;
+}
+
+/* Checkbox Grid */
+.checkboxGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.checkboxOption {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+  border: 2px solid transparent;
+}
+
+.checkboxOption:hover {
+  background-color: var(--light-green);
+}
+
+.checkboxOption:has(input:checked) {
+  background-color: var(--light-green);
+  border-color: var(--primary-green);
+}
+
+.checkboxInput {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary-green);
+}
+
+.checkboxLabel {
+  font-weight: 500;
+  color: var(--text-primary);
+  user-select: none;
+  font-size: var(--font-size-sm);
+}
+
+/* Custom Input Section */
+.customSection {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--gray-medium);
+}
+
+.customInput {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.input {
+  flex: 1;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--gray-medium);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  background-color: var(--white);
+  transition: all var(--transition-fast);
+}
+
+.input:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+  outline: none;
+}
+
+.input:disabled {
+  background-color: var(--gray-light);
+  cursor: not-allowed;
+}
+
+.addButton {
+  width: 40px;
+  height: 40px;
+  background: var(--primary-green);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.addButton:hover:not(:disabled) {
+  background: var(--secondary-green);
+  transform: scale(1.05);
+}
+
+.addButton:disabled {
+  background: var(--gray-medium);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Custom Tags */
+.customTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.customTag {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--primary-green);
+  color: var(--white);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+.removeButton {
+  width: 16px;
+  height: 16px;
+  background: none;
+  border: none;
+  color: var(--white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-fast);
+}
+
+.removeButton:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.error {
+  color: var(--error);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.submitError {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: var(--error);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--gray-medium);
+}
+
+.backButton,
+.nextButton,
+.skipButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: 48px;
+}
+
+.backButton {
+  background-color: var(--gray-light);
+  color: var(--text-primary);
+}
+
+.backButton:hover:not(:disabled) {
+  background-color: var(--gray-medium);
+}
+
+.rightButtons {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.skipButton {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 2px solid var(--gray-medium);
+}
+
+.skipButton:hover:not(:disabled) {
+  background-color: var(--gray-light);
+  color: var(--text-primary);
+}
+
+.nextButton {
+  background: var(--primary-gradient);
+  color: var(--white);
+}
+
+.nextButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.backButton:disabled,
+.nextButton:disabled,
+.skipButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.nextButton:disabled {
+  transform: none;
+}
+
+.buttonIcon {
+  font-size: 18px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: var(--spacing-sm);
+  }
+  
+  .formCard {
+    padding: var(--spacing-lg);
+    max-height: 95vh;
+  }
+  
+  .dietGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .checkboxGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .navigation {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .rightButtons {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .backButton,
+  .nextButton,
+  .skipButton {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .formCard {
+    padding: var(--spacing-md);
+  }
+  
+  .progressIndicator {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+  }
+  
+  .progressText {
+    align-self: flex-end;
+  }
+  
+  .title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .headerIcon {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+  
+  .dietCard {
+    padding: var(--spacing-md);
+  }
+  
+  .dietIcon {
+    font-size: 2rem;
+  }
+  
+  .customInput {
+    flex-direction: column;
+  }
+  
+  .addButton {
+    width: 100%;
+    height: 40px;
+  }
+}
+
+/* Animation */
+.formCard {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.field {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.field:nth-child(1) { animation-delay: 0.1s; }
+.field:nth-child(2) { animation-delay: 0.2s; }
+.field:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+

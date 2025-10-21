@@ -1,0 +1,328 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  background: var(--primary-gradient);
+}
+
+.welcomeCard {
+  width: 100%;
+  max-width: 600px;
+  background-color: var(--white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-heavy);
+  padding: var(--spacing-xxl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.progressIndicator {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.progressBar {
+  flex: 1;
+  height: 8px;
+  background-color: var(--gray-medium);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--primary-gradient);
+  border-radius: var(--radius-sm);
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.logoIcon {
+  font-size: 3rem;
+}
+
+.logoText {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--primary-green);
+  margin: 0;
+}
+
+.welcomeSection {
+  text-align: center;
+}
+
+.title {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-md) 0;
+  line-height: 1.3;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: var(--font-size-lg);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.benefitsSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.benefitsTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  text-align: center;
+}
+
+.benefitsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.benefitCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--spacing-lg);
+  background-color: var(--light-green);
+  border-radius: var(--radius-lg);
+  transition: transform var(--transition-fast);
+}
+
+.benefitCard:hover {
+  transform: translateY(-2px);
+}
+
+.benefitIcon {
+  width: 60px;
+  height: 60px;
+  background: var(--primary-gradient);
+  color: var(--white);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: var(--spacing-md);
+}
+
+.benefitTitle {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.benefitDescription {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.motivationalSection {
+  display: flex;
+  justify-content: center;
+}
+
+.motivationalCard {
+  background: var(--primary-gradient);
+  color: var(--white);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  max-width: 400px;
+}
+
+.motivationalTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.motivationalText {
+  font-size: var(--font-size-base);
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+.actionSection {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--gray-medium);
+}
+
+.getStartedButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg) var(--spacing-xxl);
+  background: var(--primary-gradient);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: 56px;
+}
+
+.getStartedButton:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.getStartedButton:active {
+  transform: translateY(0);
+}
+
+.buttonIcon {
+  font-size: 20px;
+  transition: transform var(--transition-fast);
+}
+
+.getStartedButton:hover .buttonIcon {
+  transform: translateX(4px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: var(--spacing-sm);
+  }
+  
+  .welcomeCard {
+    padding: var(--spacing-lg);
+    gap: var(--spacing-lg);
+  }
+  
+  .benefitsGrid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .benefitCard {
+    padding: var(--spacing-md);
+  }
+  
+  .benefitIcon {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+  
+  .logoText {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .subtitle {
+    font-size: var(--font-size-base);
+  }
+}
+
+@media (max-width: 480px) {
+  .welcomeCard {
+    padding: var(--spacing-md);
+  }
+  
+  .progressIndicator {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+  }
+  
+  .progressText {
+    align-self: flex-end;
+  }
+  
+  .motivationalCard {
+    padding: var(--spacing-lg);
+  }
+  
+  .getStartedButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Animation */
+.welcomeCard {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.benefitCard {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.benefitCard:nth-child(1) { animation-delay: 0.1s; }
+.benefitCard:nth-child(2) { animation-delay: 0.2s; }
+.benefitCard:nth-child(3) { animation-delay: 0.3s; }
+.benefitCard:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
