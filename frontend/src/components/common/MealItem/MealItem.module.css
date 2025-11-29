@@ -235,6 +235,8 @@
   font-weight: 500;
 }
 
+
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .mealItem {
@@ -264,6 +266,171 @@
   
   .macroLabel {
     margin-bottom: 0;
+  }
+}
+
+/* New styles for expanded meal details */
+.mealTypeBadge {
+  display: inline-block;
+  background: var(--light-green);
+  color: var(--primary-green);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: capitalize;
+  margin-top: var(--spacing-xs);
+}
+
+.description {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.4;
+  padding: var(--spacing-sm);
+  background: var(--gray-light);
+  border-radius: var(--radius-sm);
+}
+
+.nutritionGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background: var(--light-green);
+  border-radius: var(--radius-md);
+}
+
+.nutritionItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.nutritionLabel {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.nutritionValue {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--primary-green);
+}
+
+.detailsToggle {
+  width: 100%;
+  background: none;
+  border: 1px solid var(--gray-medium);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-bottom: var(--spacing-sm);
+}
+
+.detailsToggle:hover {
+  background: var(--gray-light);
+  border-color: var(--primary-green);
+  color: var(--primary-green);
+}
+
+.expandedDetails {
+  border-top: 1px solid var(--gray-medium);
+  padding-top: var(--spacing-md);
+}
+
+.detailSection {
+  margin-bottom: var(--spacing-md);
+}
+
+.detailSection:last-child {
+  margin-bottom: 0;
+}
+
+.detailLabel {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.detailValue {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  padding: var(--spacing-sm);
+  background: var(--gray-light);
+  border-radius: var(--radius-sm);
+}
+
+.ingredientsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.ingredient {
+  background: var(--light-green);
+  color: var(--primary-green);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+/* Remove old macrosInfo styles since we're using nutritionGrid */
+.macrosInfo {
+  display: none;
+}
+
+/* Responsive design for new elements */
+@media (max-width: 768px) {
+  .nutritionGrid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xs);
+  }
+  
+  .nutritionItem {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xs) 0;
+  }
+  
+  .nutritionLabel {
+    margin-bottom: 0;
+  }
+  
+  .ingredientsList {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  
+  .ingredient {
+    width: fit-content;
+  }
+}
+
+@media (max-width: 480px) {
+  .description {
+    font-size: var(--font-size-xs);
+  }
+  
+  .nutritionLabel,
+  .nutritionValue {
+    font-size: var(--font-size-xs);
+  }
+  
+  .detailsToggle {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs);
   }
 }
 
@@ -315,6 +482,11 @@
     transform: translateY(0);
   }
 }
+
+
+
+
+
 
 
 

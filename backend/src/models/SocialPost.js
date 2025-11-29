@@ -1,5 +1,26 @@
 const mongoose = require('mongoose');
 
+// Separate comment schema definition
+const replySchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  text: {
+    type: String,
+    required: true,
+    trim: true,
+    maxlength: 300
+  },
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }]
+}, {
+  timestamps: true
+});
+
 const commentSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -16,27 +37,7 @@ const commentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }],
-  replies: [{
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    },
-    text: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 300
-    },
-    likes: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }],
-    createdAt: {
-      type: Date,
-      default: Date.now
-    }
-  }]
+  replies: [replySchema]
 }, {
   timestamps: true
 });
@@ -129,9 +130,9 @@ const socialPostSchema = new mongoose.Schema({
         'personal_best', 'diet_success', 'transformation'
       ]
     },
-    value: mongoose.Schema.Types.Mixed, // Can be number, string, etc.
+    value: mongoose.Schema.Types.Mixed,
     unit: String,
-    duration: String, // e.g., "30 days", "6 months"
+    duration: String,
     beforeAfterPhotos: [String]
   },
   
@@ -159,7 +160,7 @@ const socialPostSchema = new mongoose.Schema({
     calories: Number,
     protein: Number,
     carbs: Number,
-    fat: Number,
+    fats: Number,
     ingredients: [String],
     recipe: String,
     cookingTime: Number,
@@ -262,16 +263,199 @@ socialPostSchema.index({ type: 1, createdAt: -1 });
 socialPostSchema.index({ tags: 1 });
 socialPostSchema.index({ categories: 1 });
 socialPostSchema.index({ visibility: 1 });
-socialPostSchema.index({ 'likes': 1 });
+socialPostSchema.index({ likes: 1 });
 socialPostSchema.index({ engagementScore: -1 });
 socialPostSchema.index({ trendingScore: -1 });
 socialPostSchema.index({ createdAt: -1 });
+
+// Add to your existing SocialPost model
+
+// Pre-save middleware to extract hashtags
+socialPostSchema.pre('save', function(next) {
+  // Extract hashtags from content
+  const hashtagRegex = /#(\w+)/g;
+  const matches = this.content.match(hashtagRegex);
+  
+  if (matches) {
+    // Add hashtags to tags array (remove the # symbol and convert to lowercase)
+    const newHashtags = matches.map(tag => tag.slice(1).toLowerCase());
+    
+    // Merge with existing tags, remove duplicates
+    this.tags = [...new Set([...this.tags, ...newHashtags])];
+  }
+  
+  // Calculate engagement score
+  const likeScore = this.likes.length * 2;
+  const commentScore = this.comments.length * 3;
+  const shareScore = this.shares.length * 5;
+  const viewScore = Math.min(this.views * 0.1, 10);
+  
+  this.engagementScore = likeScore + commentScore + shareScore + viewScore;
+  
+  // Calculate trending score
+  const now = new Date();
+  const postAge = (now - this.createdAt) / (1000 * 60 * 60); // hours
+  const timeDecay = Math.max(0.1, 1 - (postAge / 168)); // decay over 1 week
+  
+  this.trendingScore = this.engagementScore * timeDecay;
+  
+  next();
+});
+
+// Static method to search posts
+socialPostSchema.statics.searchPosts = async function(searchParams) {
+  const {
+    query = '',
+    categories = [],
+    tags = [],
+    types = [],
+    userId,
+    sortBy = 'createdAt',
+    sortOrder = 'desc',
+    page = 1,
+    limit = 10
+  } = searchParams;
+
+  const skip = (page - 1) * limit;
+  const sortOptions = { [sortBy]: sortOrder === 'desc' ? -1 : 1 };
+
+  // Build search query
+  let searchQuery = {
+    visibility: 'public',
+    isHidden: false
+  };
+
+  // Text search across multiple fields
+  if (query.trim()) {
+    searchQuery.$or = [
+      { content: { $regex: query, $options: 'i' } },
+      { title: { $regex: query, $options: 'i' } },
+      { tags: { $in: [query.toLowerCase()] } }
+    ];
+  }
+
+  // Filter by categories
+  if (categories.length > 0) {
+    searchQuery.categories = { $in: categories };
+  }
+
+  // Filter by tags
+  if (tags.length > 0) {
+    searchQuery.tags = { $in: tags.map(tag => tag.toLowerCase()) };
+  }
+
+  // Filter by post types
+  if (types.length > 0) {
+    searchQuery.type = { $in: types };
+  }
+
+  // Filter by user
+  if (userId) {
+    searchQuery.userId = userId;
+  }
+
+  const posts = await this.find(searchQuery)
+    .populate('userId', 'firstName lastName social.profilePicture')
+    .populate('comments.userId', 'firstName lastName profilePicture')
+    .sort(sortOptions)
+    .skip(skip)
+    .limit(limit);
+
+  const total = await this.countDocuments(searchQuery);
+
+  return {
+    posts,
+    total,
+    page: parseInt(page),
+    totalPages: Math.ceil(total / limit),
+    hasMore: page * limit < total
+  };
+};
+
+// Static method to get trending hashtags
+socialPostSchema.statics.getTrendingHashtags = async function(limit = 10, timeframe = 'week') {
+  let timeFilter = {};
+  const now = new Date();
+  
+  switch (timeframe) {
+    case 'day':
+      timeFilter = { createdAt: { $gte: new Date(now.setDate(now.getDate() - 1)) } };
+      break;
+    case 'week':
+      timeFilter = { createdAt: { $gte: new Date(now.setDate(now.getDate() - 7)) } };
+      break;
+    case 'month':
+      timeFilter = { createdAt: { $gte: new Date(now.setMonth(now.getMonth() - 1)) } };
+      break;
+  }
+
+  const hashtagStats = await this.aggregate([
+    { $match: { ...timeFilter, tags: { $exists: true, $ne: [] } } },
+    { $unwind: '$tags' },
+    {
+      $group: {
+        _id: '$tags',
+        count: { $sum: 1 },
+        totalEngagement: { $sum: '$engagementScore' },
+        recentPosts: { $push: '$$ROOT' }
+      }
+    },
+    { $sort: { count: -1, totalEngagement: -1 } },
+    { $limit: limit }
+  ]);
+
+  return hashtagStats.map(stat => ({
+    tag: stat._id,
+    count: stat.count,
+    engagement: stat.totalEngagement
+  }));
+};
+
+// Static method to get posts by hashtag
+socialPostSchema.statics.getPostsByHashtag = async function(hashtag, options = {}) {
+  const {
+    page = 1,
+    limit = 10,
+    sortBy = 'createdAt',
+    sortOrder = 'desc'
+  } = options;
+
+  const skip = (page - 1) * limit;
+  const sortOptions = { [sortBy]: sortOrder === 'desc' ? -1 : 1 };
+
+  const posts = await this.find({
+    tags: hashtag.toLowerCase(),
+    visibility: 'public',
+    isHidden: false
+  })
+    .populate('userId', 'firstName lastName social.profilePicture')
+    .populate('comments.userId', 'firstName lastName profilePicture')
+    .sort(sortOptions)
+    .skip(skip)
+    .limit(limit);
+
+  const total = await this.countDocuments({
+    tags: hashtag.toLowerCase(),
+    visibility: 'public',
+    isHidden: false
+  });
+
+  return {
+    posts,
+    total,
+    page: parseInt(page),
+    totalPages: Math.ceil(total / limit),
+    hasMore: page * limit < total
+  };
+};
 
 // Pre-save middleware to calculate engagement scores
 socialPostSchema.pre('save', function(next) {
   // Calculate engagement score based on interactions
   const likeScore = this.likes.length * 2;
-  const commentScore = this.comments.length * 3;
+  const commentScore = this.comments.reduce((total, comment) => {
+    return total + 3 + (comment.replies.length * 2);
+  }, 0);
   const shareScore = this.shares.length * 5;
   const viewScore = Math.min(this.views * 0.1, 10);
   
@@ -297,20 +481,22 @@ socialPostSchema.methods.addComment = function(userId, text, parentCommentId = n
         userId,
         text
       });
+      return this.save();
     }
+    throw new Error('Parent comment not found');
   } else {
     // Add new comment
     this.comments.push({
       userId,
       text
     });
+    return this.save();
   }
-  return this.save();
 };
 
 // Method to toggle like on post
 socialPostSchema.methods.toggleLike = function(userId) {
-  const likeIndex = this.likes.indexOf(userId);
+  const likeIndex = this.likes.findIndex(likeId => likeId.toString() === userId.toString());
   if (likeIndex > -1) {
     this.likes.splice(likeIndex, 1);
   } else {
@@ -323,7 +509,7 @@ socialPostSchema.methods.toggleLike = function(userId) {
 socialPostSchema.methods.toggleCommentLike = function(commentId, userId) {
   const comment = this.comments.id(commentId);
   if (comment) {
-    const likeIndex = comment.likes.indexOf(userId);
+    const likeIndex = comment.likes.findIndex(likeId => likeId.toString() === userId.toString());
     if (likeIndex > -1) {
       comment.likes.splice(likeIndex, 1);
     } else {
@@ -331,33 +517,43 @@ socialPostSchema.methods.toggleCommentLike = function(commentId, userId) {
     }
     return this.save();
   }
-  return Promise.reject(new Error('Comment not found'));
+  throw new Error('Comment not found');
 };
 
 // Method to share post
 socialPostSchema.methods.sharePost = function(userId) {
-  this.shares.push({ userId });
-  return this.save();
+  // Check if user already shared this post
+  const alreadyShared = this.shares.some(share => share.userId.toString() === userId.toString());
+  if (!alreadyShared) {
+    this.shares.push({ userId });
+    return this.save();
+  }
+  return Promise.resolve(this); // Already shared, no action needed
 };
 
 // Method to report post
 socialPostSchema.methods.reportPost = function(userId, reason, details = '') {
-  this.reported.push({
-    userId,
-    reason,
-    details
-  });
-  
-  // Auto-flag if multiple reports
-  if (this.reported.length >= 3) {
-    this.isFlagged = true;
+  // Check if user already reported this post
+  const alreadyReported = this.reported.some(report => report.userId.toString() === userId.toString());
+  if (!alreadyReported) {
+    this.reported.push({
+      userId,
+      reason,
+      details
+    });
+    
+    // Auto-flag if multiple reports
+    if (this.reported.length >= 3) {
+      this.isFlagged = true;
+    }
+    
+    return this.save();
   }
-  
-  return this.save();
+  throw new Error('User already reported this post');
 };
 
 // Static method to get feed posts with advanced filtering
-socialPostSchema.statics.getFeed = function(userId, options = {}) {
+socialPostSchema.statics.getFeed = async function(userId, options = {}) {
   const {
     page = 1,
     limit = 10,
@@ -377,7 +573,8 @@ socialPostSchema.statics.getFeed = function(userId, options = {}) {
       { visibility: 'public' },
       { userId: userId } // User's own posts
     ],
-    isHidden: false
+    isHidden: false,
+    isFlagged: false
   };
   
   // Add filters
@@ -393,14 +590,17 @@ socialPostSchema.statics.getFeed = function(userId, options = {}) {
     query.tags = { $in: tags };
   }
   
-  return this.find(query)
-    .populate('userId', 'firstName lastName profilePicture')
+  const posts = await this.find(query)
+    .populate('userId', 'firstName lastName profilePicture social')
     .populate('comments.userId', 'firstName lastName profilePicture')
     .populate('comments.replies.userId', 'firstName lastName profilePicture')
     .populate('likes', 'firstName lastName profilePicture')
     .sort(sortOptions)
     .skip(skip)
-    .limit(limit);
+    .limit(limit)
+    .lean(); // Use lean for better performance
+
+  return posts;
 };
 
 // Static method to get user's posts
@@ -414,7 +614,7 @@ socialPostSchema.statics.getUserPosts = function(userId, options = {}) {
   
   const skip = (page - 1) * limit;
   
-  let query = { userId };
+  let query = { userId, isHidden: false };
   
   if (types.length > 0) {
     query.type = { $in: types };
@@ -438,6 +638,7 @@ socialPostSchema.statics.getTrendingPosts = function(limit = 10) {
   return this.find({
     visibility: 'public',
     isHidden: false,
+    isFlagged: false,
     createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } // Last 7 days
   })
   .populate('userId', 'firstName lastName profilePicture')
@@ -465,7 +666,8 @@ socialPostSchema.statics.getMostEngagedPosts = function(limit = 10, timeframe = 
   return this.find({
     ...timeFilter,
     visibility: 'public',
-    isHidden: false
+    isHidden: false,
+    isFlagged: false
   })
   .populate('userId', 'firstName lastName profilePicture')
   .sort({ engagementScore: -1 })

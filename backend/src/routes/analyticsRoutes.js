@@ -3,7 +3,9 @@ const {
   getDailyAnalytics,
   getWeeklyAnalytics,
   getMonthlyAnalytics,
-  getMacroDistribution
+  getMacroDistribution,
+  getDetailedAnalytics,
+  getMacronutrientDetails
 } = require('../controllers/analyticsController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
@@ -16,5 +18,7 @@ router.get('/daily/:date', getDailyAnalytics);
 router.get('/weekly', getWeeklyAnalytics);
 router.get('/monthly', getMonthlyAnalytics);
 router.get('/macros', getMacroDistribution);
+router.get('/detailed', getDetailedAnalytics);
+router.get('/macronutrient-details', getMacronutrientDetails);
 
 module.exports = router;

@@ -47,7 +47,7 @@ const userMealSchema = new mongoose.Schema({
     required: true,
     min: 0
   },
-  fat: {
+  fats: {
     type: Number,
     required: true,
     min: 0
@@ -76,7 +76,7 @@ userMealSchema.pre('save', async function(next) {
         this.calories = Math.round(meal.calories * this.quantity);
         this.protein = Math.round(meal.protein * this.quantity * 10) / 10;
         this.carbs = Math.round(meal.carbs * this.quantity * 10) / 10;
-        this.fat = Math.round(meal.fat * this.quantity * 10) / 10;
+        this.fats = Math.round(meal.fat * this.quantity * 10) / 10;
       }
     } catch (error) {
       return next(error);

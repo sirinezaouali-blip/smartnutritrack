@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '../../contexts/UserContext';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { fetchUserMeals, fetchMealHistory } from '../../services/analyticsService';
+import { fetchUserMeals, fetchMealHistory, deleteUserMeal } from '../../services/analyticsService';
 import { FiSearch, FiFilter, FiCalendar, FiClock, FiTrash2, FiEdit, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import MealItem from '../../components/common/MealItem/MealItem';
 import LoadingSpinner from '../../components/common/LoadingSpinner/LoadingSpinner';
 import styles from './MealHistory.module.css';
+import { useNavigate } from 'react-router-dom';
 
 const MealHistory = () => {
   const { userProfile } = useUser();
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const [mealHistory, setMealHistory] = useState([]);
   const [filteredMeals, setFilteredMeals] = useState([]);
@@ -22,16 +24,22 @@ const MealHistory = () => {
   const [mealsPerPage] = useState(10);
   const [sortBy, setSortBy] = useState('date-desc');
 
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
   useEffect(() => {
     const loadMealHistory = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const response = await fetchMealHistory();
+        const response = await fetchMealHistory(page, limit);
+        console.log('🔍 MEAL HISTORY API RESPONSE:', response); // ADD THIS LINE
+        
         if (response.success) {
-          setMealHistory(response.data.meals || []);
-          setFilteredMeals(response.data.meals || []);
+          console.log('🔍 MEAL HISTORY DATA:', response.data); // ADD THIS LINE
+          setMealHistory(response.data || []);
+          setFilteredMeals(response.data || []);
         } else {
           setError('Failed to load meal history');
         }
@@ -51,9 +59,10 @@ const MealHistory = () => {
 
     // Search filter
     if (searchTerm) {
-      filtered = filtered.filter(meal =>
-        meal.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      filtered = filtered.filter(meal => {
+        const mealName = meal.mealId?.name || meal.name || '';
+        return mealName.toLowerCase().includes(searchTerm.toLowerCase());
+      });
     }
 
     // Meal type filter
@@ -81,9 +90,9 @@ const MealHistory = () => {
         case 'calories-asc':
           return a.calories - b.calories;
         case 'name-asc':
-          return a.name.localeCompare(b.name);
+          return (a.mealId?.name || a.name || '').localeCompare(b.mealId?.name || b.name || '');
         case 'name-desc':
-          return b.name.localeCompare(a.name);
+          return (b.mealId?.name || b.name || '').localeCompare(a.mealId?.name || a.name || '');
         default:
           return 0;
       }
@@ -118,21 +127,29 @@ const MealHistory = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleDeleteMeal = async (mealId) => {
-    if (window.confirm('Are you sure you want to delete this meal?')) {
+  const handleDeleteMeal = async (meal) => {
+    if (window.confirm(`Are you sure you want to delete "${meal.name}"?`)) {
       try {
-        // Implement delete functionality
-        setMealHistory(prev => prev.filter(meal => meal.id !== mealId));
-        setFilteredMeals(prev => prev.filter(meal => meal.id !== mealId));
+        // Use the deleteUserMeal service
+        const deleteResponse = await deleteUserMeal(meal._id);
+        
+        if (deleteResponse.success) {
+          // Remove from both arrays using _id
+          setMealHistory(prev => prev.filter(m => m._id !== meal._id));
+          setFilteredMeals(prev => prev.filter(m => m._id !== meal._id));
+        } else {
+          alert('Failed to delete meal. Please try again.');
+        }
       } catch (error) {
         console.error('Error deleting meal:', error);
+        alert('Error deleting meal. Please try again.');
       }
     }
   };
 
   const handleEditMeal = (meal) => {
-    // Navigate to edit meal page or open edit modal
-    console.log('Edit meal:', meal);
+  // Navigate to edit user meal page
+    navigate(`/edit-user-meal/${meal._id}`);
   };
 
   const clearFilters = () => {
@@ -218,6 +235,7 @@ const MealHistory = () => {
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
               className={styles.dateInput}
+              placeholder="Filter by date"
             />
           </div>
 
@@ -269,6 +287,8 @@ const MealHistory = () => {
                   showTime={true}
                   showCalories={true}
                   showDate={true}
+                  showMacros={true}
+                  compact={false}
                 />
                 <div className={styles.mealActions}>
                   <button
@@ -279,7 +299,7 @@ const MealHistory = () => {
                     <FiEdit />
                   </button>
                   <button
-                    onClick={() => handleDeleteMeal(meal.id)}
+                    onClick={() => handleDeleteMeal(meal)}  
                     className={styles.actionButton}
                     title="Delete meal"
                   >

@@ -1,0 +1,319 @@
+.enhancementCard {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--secondary);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.titleSection {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.titleIcon {
+  font-size: 24px;
+  color: var(--secondary);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.closeButton {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 24px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.closeButton:hover {
+  background: var(--gray-light);
+  color: var(--text-primary);
+}
+
+.activityLevel {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.levelBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  color: white;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+}
+
+.levelIcon {
+  font-size: 16px;
+}
+
+.levelDescription {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.enhancementContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.sectionIcon {
+  font-size: 18px;
+  color: var(--primary-green);
+}
+
+.exerciseCard {
+  background: var(--light-green);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  border: 1px solid var(--primary-green);
+}
+
+.exercisePrimary h5 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.intensity {
+  font-size: var(--font-size-sm);
+  color: var(--primary-green);
+  font-weight: 500;
+  margin: 0;
+}
+
+.exerciseTiming {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--primary-green);
+}
+
+.timingIcon {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.exerciseTiming span {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.focusCard {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  border: 1px solid var(--gray-medium);
+}
+
+.focusText {
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  margin: 0;
+  font-weight: 500;
+}
+
+.benefitsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.benefitItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: white;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-medium);
+}
+
+.benefitDot {
+  width: 8px;
+  height: 8px;
+  background: var(--primary-green);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.benefitItem span {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.tipsCard {
+  background: var(--warning-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  border: 1px solid var(--warning);
+}
+
+.tip {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+  line-height: 1.5;
+}
+
+.tip:last-child {
+  margin-bottom: 0;
+}
+
+.footer {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--gray-medium);
+}
+
+.disclaimer {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--light-green);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--primary-green);
+}
+
+.disclaimerIcon {
+  font-size: 20px;
+  color: var(--primary-green);
+  flex-shrink: 0;
+  margin-top: var(--spacing-xs);
+}
+
+.disclaimer p {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .enhancementCard {
+    padding: var(--spacing-md);
+  }
+
+  .header {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+  }
+
+  .closeButton {
+    align-self: flex-end;
+  }
+
+  .exerciseCard {
+    padding: var(--spacing-sm);
+  }
+
+  .benefitsList {
+    gap: var(--spacing-xs);
+  }
+
+  .benefitItem {
+    padding: var(--spacing-xs);
+  }
+
+  .tipsCard {
+    padding: var(--spacing-sm);
+  }
+
+  .disclaimer {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .enhancementCard {
+    padding: var(--spacing-sm);
+  }
+
+  .title {
+    font-size: var(--font-size-lg);
+  }
+
+  .levelBadge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
+
+  .sectionTitle {
+    font-size: var(--font-size-base);
+  }
+
+  .focusText {
+    font-size: var(--font-size-sm);
+  }
+
+  .benefitItem span {
+    font-size: var(--font-size-xs);
+  }
+
+  .tip {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Animations */
+.enhancementCard {
+  animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

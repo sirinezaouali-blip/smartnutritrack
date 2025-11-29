@@ -1,0 +1,131 @@
+.categoryFilter {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+  margin-bottom: 1.5rem;
+}
+
+.filterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.filterTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+}
+
+.filterIcon {
+  color: var(--primary-green);
+}
+
+.clearButton {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: var(--gray-light);
+  color: var(--text-secondary);
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clearButton:hover {
+  background: var(--gray-medium);
+  color: var(--text-primary);
+}
+
+.categoriesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.categoryButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: var(--gray-light);
+  border: 2px solid var(--gray-medium);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.categoryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.categoryButton.active {
+  background: var(--category-color);
+  border-color: var(--category-color);
+  color: white;
+}
+
+.categoryButton.active .categoryIcon {
+  transform: scale(1.1);
+}
+
+.categoryIcon {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.categoryLabel {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.activeFilters {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--gray-light);
+}
+
+.activeFiltersText {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .categoryFilter {
+    padding: 1rem;
+  }
+  
+  .categoriesGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .filterHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .clearButton {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .categoriesGrid {
+    grid-template-columns: 1fr;
+  }
+}

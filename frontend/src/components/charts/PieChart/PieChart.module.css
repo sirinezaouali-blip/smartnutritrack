@@ -1,0 +1,30 @@
+.pieChart {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 100%;
+}
+
+.chartTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 1rem 0;
+  text-align: center;
+}
+
+.chartWrapper {
+  position: relative;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .pieChart {
+    padding: 1rem;
+  }
+  
+  .chartTitle {
+    font-size: 0.9375rem;
+  }
+}

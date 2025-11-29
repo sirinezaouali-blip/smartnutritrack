@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
 import { saveMeal } from '../../services/mealService';
 import { FiArrowLeft, FiSave, FiPlus, FiX } from 'react-icons/fi';
@@ -9,6 +9,35 @@ import styles from './AddMeal.module.css';
 const AddMeal = () => {
   const { userProfile } = useUser();
   const navigate = useNavigate();
+  const location = useLocation(); 
+  
+  React.useEffect(() => {
+    if (location.state?.scannedMeal) {
+      console.log('📥 Received scanned meal data:', location.state.scannedMeal);
+      
+      const scannedData = location.state.scannedMeal;
+      setMealData(prev => ({
+        ...prev,
+        name: scannedData.name || '',
+        calories: scannedData.calories || '',
+        protein: scannedData.protein || '',
+        carbs: scannedData.carbs || '',
+        fats: scannedData.fats || '',
+        servingSize: scannedData.servingSize || `${scannedData.quantity || 1} ${scannedData.unit || 'medium'}`,
+        mealType: scannedData.mealType || 'snack'
+      }));
+      
+      // Add ingredients if available
+      if (scannedData.name) {
+        setMealData(prev => ({
+          ...prev,
+          ingredients: [scannedData.name, ...prev.ingredients]
+        }));
+      }
+    }
+  }, [location.state]); 
+
+  
   
   const [mealData, setMealData] = useState({
     name: '',
@@ -17,7 +46,7 @@ const AddMeal = () => {
     calories: '',
     protein: '',
     carbs: '',
-    fat: '',
+    fats: '',
     ingredients: [],
     servingSize: '',
     notes: ''
@@ -92,7 +121,7 @@ const AddMeal = () => {
         calories: parseInt(mealData.calories),
         protein: parseFloat(mealData.protein) || 0,
         carbs: parseFloat(mealData.carbs) || 0,
-        fat: parseFloat(mealData.fat) || 0,
+        fats: parseFloat(mealData.fats) || 0,
         date: new Date().toISOString(),
         userId: userProfile.id
       };
@@ -112,7 +141,11 @@ const AddMeal = () => {
   };
 
   const handleBack = () => {
-    navigate('/dashboard');
+    if (location.state?.fromScan) {
+      navigate('/scan-food');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   return (
@@ -256,14 +289,14 @@ const AddMeal = () => {
               </div>
 
               <div className={styles.field}>
-                <label htmlFor="fat" className={styles.label}>
+                <label htmlFor="fats" className={styles.label}>
                   Fats (g)
                 </label>
                 <input
                   type="number"
-                  id="fat"
-                  name="fat"
-                  value={mealData.fat}
+                  id="fats"
+                  name="fats"
+                  value={mealData.fats}
                   onChange={handleInputChange}
                   className={styles.input}
                   placeholder="0"
@@ -383,6 +416,11 @@ const AddMeal = () => {
 };
 
 export default AddMeal;
+
+
+
+
+
 
 
 

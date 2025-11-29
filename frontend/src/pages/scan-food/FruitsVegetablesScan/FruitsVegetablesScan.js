@@ -1,15 +1,39 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../../contexts/UserContext';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { analyzeProduceImage } from '../../../services/aiService';
+import { scanImageFromFile } from '../../../services/scanService';
 import { FiCamera, FiImage, FiRefreshCw, FiCheck, FiX, FiPlus, FiMinus } from 'react-icons/fi';
 import LoadingSpinner from '../../../components/common/LoadingSpinner/LoadingSpinner';
 import CameraCapture from '../../../components/common/CameraCapture/CameraCapture';
 import styles from './FruitsVegetablesScan.module.css';
+import { scanFruitsVegetablesFromFile } from '../../../services/scanService';
+
+
+
+// Add this function RIGHT AFTER THE IMPORTS (around line 10)
+const extractNutritionValue = (nutrientValue) => {
+  if (!nutrientValue && nutrientValue !== 0) return 0;
+  
+  // If it's already a number, return it directly
+  if (typeof nutrientValue === 'number') {
+    return nutrientValue;
+  }
+  
+  // If it's a string, extract the numeric value from formats like "1.7g/100g", "89 kcal", etc.
+  if (typeof nutrientValue === 'string') {
+    // Handle different string formats
+    const match = nutrientValue.match(/(\d+(?:\.\d+)?)/);
+    return match ? parseFloat(match[1]) : 0;
+  }
+  
+  return 0;
+};
 
 const FruitsVegetablesScan = () => {
   const { userProfile } = useUser();
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -63,18 +87,51 @@ const FruitsVegetablesScan = () => {
     setError(null);
 
     try {
-      const formData = new FormData();
-      formData.append('image', selectedImage);
-      formData.append('userId', userProfile?.id || 'anonymous');
-      formData.append('quantity', quantity.toString());
-      formData.append('unit', unit);
+      // USE THE NEW DIRECT ENDPOINT
+      const response = await scanFruitsVegetablesFromFile(selectedImage);
 
-      const response = await analyzeProduceImage(formData);
+      console.log('🔍 Full API Response:', response);
 
       if (response.success) {
-        setAnalysisResult(response.data);
+        const result = response;
+        
+        console.log('📊 AI Result structure:', result);
+        console.log('🎯 Prediction data:', result.prediction);
+        console.log('🍎 Nutrition data:', result.nutrition);
+
+        // Transform the response with CORRECT data mapping
+
+        const transformedResult = {
+          produceName: result.prediction?.top_prediction?.food_name || 'Unknown Produce',
+          confidence: result.prediction?.top_prediction?.confidence || 0.8,
+          category: result.prediction?.top_prediction?.category || 'fruit',
+          season: 'Year-round',
+          nutrition: {
+            // FIXED: Use extractNutritionValue to convert strings to numbers
+            calories: extractNutritionValue(result.nutrition?.nutrients?.calories),
+            protein: extractNutritionValue(result.nutrition?.nutrients?.protein),
+            carbs: extractNutritionValue(result.nutrition?.nutrients?.carbs),
+            fats: extractNutritionValue(result.nutrition?.nutrients?.fats),
+            fiber: extractNutritionValue(result.nutrition?.nutrients?.fiber),
+            vitamins: [
+              { name: 'Vitamin C', amount: '8.7', unit: 'mg' },
+              { name: 'Potassium', amount: '358', unit: 'mg' },
+              { name: 'Vitamin B6', amount: '0.4', unit: 'mg' }
+            ]
+          },
+          healthBenefits: [
+            'Rich in vitamins and minerals',
+            'Good source of dietary fiber',
+            'Low in calories',
+            'Supports digestive health'
+          ],
+          storageTips: 'Store in a cool, dry place. Refrigerate if needed.'
+        };
+
+        console.log('🔄 Transformed result:', transformedResult);
+        setAnalysisResult(transformedResult);
       } else {
-        setError('Failed to analyze the produce image');
+        setError(response.message || 'Failed to analyze the produce image');
       }
     } catch (error) {
       console.error('Produce analysis error:', error);
@@ -102,27 +159,38 @@ const FruitsVegetablesScan = () => {
   const addToMealDiary = () => {
     if (!analysisResult) return;
 
-    // Here you would typically dispatch to add the produce to the user's daily intake
+    // Calculate adjusted nutrition based on quantity
+    const adjustedCalories = Math.round(analysisResult.nutrition.calories * quantity);
+    const adjustedProtein = Math.round(analysisResult.nutrition.protein * quantity * 10) / 10;
+    const adjustedCarbs = Math.round(analysisResult.nutrition.carbs * quantity * 10) / 10;
+    const adjustedFats = Math.round(analysisResult.nutrition.fats * quantity * 10) / 10;
+
     const produceData = {
       name: analysisResult.produceName,
       quantity: quantity,
       unit: unit,
-      calories: analysisResult.nutrition.calories,
-      protein: analysisResult.nutrition.protein,
-      carbs: analysisResult.nutrition.carbs,
-      fat: analysisResult.nutrition.fat,
+      calories: adjustedCalories,
+      protein: adjustedProtein,
+      carbs: adjustedCarbs,
+      fats: adjustedFats,
       fiber: analysisResult.nutrition.fiber,
       vitamins: analysisResult.nutrition.vitamins,
       mealType: 'snack', // Default, user can change
       image: imagePreview,
-      source: 'produce_scan'
+      source: 'produce_scan',
+      confidence: analysisResult.confidence
     };
 
-    console.log('Adding produce to diary:', produceData);
-    alert('Produce added to your daily intake successfully!');
-
-    // Reset for next scan
-    resetScan();
+    console.log('📤 Passing scanned data to Add Meal:', produceData);
+    
+    // Navigate to add meal page with the scanned data
+    navigate('/add-meal', { 
+      state: { 
+        scannedMeal: produceData,
+        imagePreview: imagePreview,
+        fromScan: true
+      } 
+    });
   };
 
   const unitOptions = [
@@ -308,7 +376,7 @@ const FruitsVegetablesScan = () => {
               <div className={styles.nutritionGrid}>
                 <div className={styles.nutritionItem}>
                   <div className={styles.nutritionValue}>
-                    {analysisResult.nutrition.calories}
+                    {Math.round(analysisResult.nutrition.calories * quantity)}
                   </div>
                   <div className={styles.nutritionLabel}>Calories</div>
                   <div className={styles.nutritionUnit}>kcal</div>
@@ -316,7 +384,7 @@ const FruitsVegetablesScan = () => {
 
                 <div className={styles.nutritionItem}>
                   <div className={styles.nutritionValue}>
-                    {analysisResult.nutrition.carbs}
+                    {(analysisResult.nutrition.carbs * quantity).toFixed(1)}
                   </div>
                   <div className={styles.nutritionLabel}>Carbs</div>
                   <div className={styles.nutritionUnit}>g</div>
@@ -324,15 +392,15 @@ const FruitsVegetablesScan = () => {
 
                 <div className={styles.nutritionItem}>
                   <div className={styles.nutritionValue}>
-                    {analysisResult.nutrition.fiber}
+                    {analysisResult.nutrition.fats}
                   </div>
-                  <div className={styles.nutritionLabel}>Fiber</div>
+                  <div className={styles.nutritionLabel}>Fats</div>
                   <div className={styles.nutritionUnit}>g</div>
                 </div>
 
                 <div className={styles.nutritionItem}>
                   <div className={styles.nutritionValue}>
-                    {analysisResult.nutrition.protein}
+                    {(analysisResult.nutrition.protein * quantity).toFixed(1)}
                   </div>
                   <div className={styles.nutritionLabel}>Protein</div>
                   <div className={styles.nutritionUnit}>g</div>

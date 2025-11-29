@@ -8,6 +8,7 @@ import json
 import re
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import SentenceTransformerEmbeddings
+from dish_service import DishRecognitionService
 
 class ProfessionalFoodService:
     def __init__(self):
@@ -18,26 +19,152 @@ class ProfessionalFoodService:
         self.init_meal_recommendations()
     
     def load_model(self):
-        """Load Google's pre-trained MobileNetV2 with Food-101 weights"""
+        """Load your fine-tuned VGG16 model for 34 fruit/vegetable classes"""
         try:
-            print("🔄 Loading Google's pre-trained Food Recognition Model...")
+            print("🔄 Loading your fine-tuned VGG16 model...")
             
-            # Use MobileNetV2 pre-trained on Food-101 dataset
-            self.model = keras.applications.MobileNetV2(
-                weights='imagenet',  # This will work perfectly
-                input_shape=(224, 224, 3),
-                include_top=True
-            )
+            # First, let's check what's in the model file
+            import h5py
+            with h5py.File('best_model.h5', 'r') as f:
+                print("📁 Model file structure:")
+                def print_attrs(name, obj):
+                    print(f"   {name}: {list(obj.attrs.keys())}")
+                f.visititems(print_attrs)
             
-            print("✅ Google's pre-trained model loaded successfully!")
-            print(f"📊 Input shape: {self.model.input_shape}")
-            print(f"📊 Output shape: {self.model.output_shape}")
-            print(f"📊 Number of classes: {1000} (ImageNet)")
+            # Try different loading methods
+            try:
+                # Method 1: Load as complete model
+                self.model = tf.keras.models.load_model('best_model.h5')
+                print("✅ Model loaded with tf.keras.models.load_model")
+            except:
+                # Method 2: Load with custom objects
+                self.model = tf.keras.models.load_model(
+                    'best_model.h5', 
+                    custom_objects={},
+                    compile=False
+                )
+                print("✅ Model loaded with custom objects")
+            
+            print("📊 Model summary:")
+            self.model.summary()
+            
+            # Define your 34 specific classes
+            self.food_classes = [
+                "Apple", "Avocado", "Banana", "Blackberry", "Blueberry", "Broccoli",
+                "Cabbage", "Capsicum", "Carrot", "Corn", "Cucumber", "Dates",
+                "Eggplant", "Fig", "Garlic", "Grapes", "Kiwi", "Lemon", "Lettuce",
+                "Mango", "Mushroom", "Olive", "Onion", "Orange", "Pear", "Peas",
+                "Pineapple", "Pomegranate", "Potato", "Pumpkin", "Raddish", "Strawberry",
+                "Tomato", "Watermelon"
+            ]
+            
+            print(f"📊 Number of classes: {len(self.food_classes)} (fruits & vegetables)")
             
         except Exception as e:
-            print(f"❌ Error loading model: {e}")
-            self.model = None
+            print(f"❌ Error loading your VGG16 model: {e}")
+            print("🔄 Attempting to build model from scratch with loaded weights...")
+            self._build_model_from_scratch()
     
+    def _build_model_from_scratch(self):
+        """Build the EXACT model architecture from your notebook"""
+        try:
+            IMG_HEIGHT = 224
+            IMG_WIDTH = 224
+            BATCH_SIZE = 32
+            
+            print("🔄 Building EXACT model architecture from your notebook...")
+            
+            # =====================
+            # EXACTLY from your notebook - Build Model
+            # =====================
+            base_model = tf.keras.applications.VGG16(
+                weights='imagenet', 
+                include_top=False, 
+                input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)
+            )
+            
+            # =====================
+            # EXACTLY from your notebook - Apply fine-tuning
+            # =====================
+            base_model.trainable = True
+            # Freeze first few layers to avoid overfitting - EXACT from notebook
+            for layer in base_model.layers[:-4]:
+                layer.trainable = False
+
+            # =====================
+            # EXACTLY from your notebook - Model Architecture
+            # =====================
+            self.model = tf.keras.Sequential([
+                base_model,
+                tf.keras.layers.GlobalAveragePooling2D(),
+                tf.keras.layers.Dense(512, activation='relu'),
+                tf.keras.layers.Dropout(0.5),
+                tf.keras.layers.Dense(34, activation='softmax')  # 34 classes EXACT
+            ])
+
+            # =====================
+            # EXACTLY from your notebook - Compile with same settings
+            # =====================
+            self.model.compile(
+                optimizer=tf.keras.optimizers.Adam(1e-5),  # Lower learning rate for fine-tuning
+                loss='categorical_crossentropy',
+                metrics=['accuracy']
+            )
+
+            print("✅ EXACT model architecture built from notebook!")
+            print("📊 Loading your trained weights...")
+            
+            # Load the weights - this should work now with exact architecture
+            self.model.load_weights('best_model.h5')
+            
+            print("🎯 YOUR FINE-TUNED VGG16 MODEL LOADED SUCCESSFULLY!")
+            print("📊 Model summary:")
+            self.model.summary()
+            
+        except Exception as e:
+            print(f"❌ Failed to build exact model: {e}")
+            print("🔍 Let's try diagnostic loading...")
+            self._diagnostic_model_loading()
+
+    def _diagnostic_model_loading(self):
+        """Diagnostic approach to load your model"""
+        try:
+            print("🔍 Running diagnostic model loading...")
+            
+            # Try loading with different approaches
+            import h5py
+            
+            # Check model file integrity
+            with h5py.File('best_model.h5', 'r') as f:
+                print("📁 Model file analysis:")
+                if 'model_weights' in f:
+                    print("   - Contains model weights")
+                if 'model_config' in f:
+                    print("   - Contains model configuration")
+                if 'training_config' in f:
+                    print("   - Contains training configuration")
+            
+            # Try legacy Keras loading
+            try:
+                import keras
+                self.model = keras.models.load_model('best_model.h5')
+                print("✅ Loaded with legacy Keras!")
+            except:
+                # Try TensorFlow with custom objects
+                self.model = tf.keras.models.load_model(
+                    'best_model.h5',
+                    custom_objects={
+                        'Adam': tf.keras.optimizers.Adam,
+                        'categorical_crossentropy': tf.keras.losses.categorical_crossentropy
+                    },
+                    compile=False
+                )
+                print("✅ Loaded with TensorFlow custom objects!")
+                
+        except Exception as e:
+            print(f"❌ Diagnostic loading failed: {e}")
+            self.model = None
+
     def init_meal_recommendations(self):
         """Initialize ChromaDB for meal recommendations"""
         try:
@@ -61,49 +188,34 @@ class ProfessionalFoodService:
             self.retriever = None
     
     def get_food_classes(self):
-        """Food categories from Food-101 dataset"""
-        food_categories = [
-            "apple_pie", "baby_back_ribs", "baklava", "beef_carpaccio", "beef_tartare",
-            "beet_salad", "beignets", "bibimbap", "bread_pudding", "breakfast_burrito",
-            "bruschetta", "caesar_salad", "cannoli", "caprese_salad", "carrot_cake",
-            "ceviche", "cheesecake", "cheese_plate", "chicken_curry", "chicken_quesadilla",
-            "chicken_wings", "chocolate_cake", "chocolate_mousse", "churros", "clam_chowder",
-            "club_sandwich", "crab_cakes", "creme_brulee", "croque_madame", "cup_cakes",
-            "deviled_eggs", "donuts", "dumplings", "edamame", "eggs_benedict",
-            "escargots", "falafel", "filet_mignon", "fish_and_chips", "foie_gras",
-            "french_fries", "french_onion_soup", "french_toast", "fried_calamari", "fried_rice",
-            "frozen_yogurt", "garlic_bread", "gnocchi", "greek_salad", "grilled_cheese_sandwich",
-            "grilled_salmon", "guacamole", "gyoza", "hamburger", "hot_and_sour_soup",
-            "hot_dog", "huevos_rancheros", "hummus", "ice_cream", "lasagna",
-            "lobster_bisque", "lobster_roll_sandwich", "macaroni_and_cheese", "macarons", "miso_soup",
-            "mussels", "nachos", "omelette", "onion_rings", "oysters",
-            "pad_thai", "paella", "pancakes", "panna_cotta", "peking_duck",
-            "pho", "pizza", "pork_chop", "poutine", "prime_rib",
-            "pulled_pork_sandwich", "ramen", "ravioli", "red_velvet_cake", "risotto",
-            "samosa", "sashimi", "scallops", "seaweed_salad", "shrimp_and_grits",
-            "spaghetti_bolognese", "spaghetti_carbonara", "spring_rolls", "steak", "strawberry_shortcake",
-            "sushi", "tacos", "takoyaki", "tiramisu", "tuna_tartare",
-            "waffles"
+        """Your 34 specific fruit and vegetable classes"""
+        return [
+            "Apple", "Avocado", "Banana", "Blackberry", "Blueberry", "Broccoli",
+            "Cabbage", "Capsicum", "Carrot", "Corn", "Cucumber", "Dates",
+            "Eggplant", "Fig", "Garlic", "Grapes", "Kiwi", "Lemon", "Lettuce",
+            "Mango", "Mushroom", "Olive", "Onion", "Orange", "Pear", "Peas",
+            "Pineapple", "Pomegranate", "Potato", "Pumpkin", "Raddish", "Strawberry",
+            "Tomato", "Watermelon"
         ]
-        return food_categories
     
     def preprocess_image(self, image_data):
-        """Preprocess image for MobileNetV2"""
+        """Preprocess image EXACTLY as in training"""
         try:
-            # Load image
+            # Load image from bytes
             img = Image.open(io.BytesIO(image_data))
             
             # Convert to RGB if needed
             if img.mode != 'RGB':
                 img = img.convert('RGB')
             
-            # Resize to model input size
+            # Resize to model input size (same as training)
             img = img.resize((224, 224))
             
-            # Convert to array and preprocess for MobileNetV2
-            img_array = keras.applications.mobilenet_v2.preprocess_input(
-                np.array(img)
-            )
+            # Convert to numpy array
+            img_array = np.array(img)
+            
+            # ✅ CRITICAL: Use SAME preprocessing as training (rescale 1./255)
+            img_array = img_array / 255.0  # Same as rescale=1./255
             
             # Add batch dimension
             img_array = np.expand_dims(img_array, axis=0)
@@ -114,60 +226,65 @@ class ProfessionalFoodService:
             raise ValueError(f"Error preprocessing image: {str(e)}")
     
     def predict_food(self, image_data):
-        """Predict food using Google's pre-trained model"""
+        """Predict food using your fine-tuned VGG16 model"""
         if self.model is None:
-            raise RuntimeError("Model not loaded")
+            raise RuntimeError("Your VGG16 model not loaded")
         
         try:
+            print(f"🔍 Image data size: {len(image_data)} bytes")
+            
             # Preprocess image
             processed_image = self.preprocess_image(image_data)
+            print(f"📐 Preprocessed image shape: {processed_image.shape}")
+            print(f"📐 Image min/max values: {processed_image.min():.3f} / {processed_image.max():.3f}")
             
             # Make prediction
             predictions = self.model.predict(processed_image, verbose=0)
+            print(f"🎯 Raw predictions shape: {predictions.shape}")
+            print(f"🎯 Sum of all predictions: {predictions[0].sum():.3f}")
             
-            # Decode predictions
-            decoded_predictions = keras.applications.mobilenet_v2.decode_predictions(
-                predictions, top=10
-            )
+            # Print ALL 34 class predictions
+            print("📊 All 34 class predictions:")
+            for i, (class_name, prob) in enumerate(zip(self.food_classes, predictions[0])):
+                if prob > 0.01:  # Only print if > 1%
+                    print(f"   {i:2d}. {class_name:15s}: {prob:.4f} ({prob*100:.2f}%)")
             
-            # Filter for food-related predictions
-            food_predictions = []
-            for _, label, confidence in decoded_predictions[0]:
-                # Check if it's food-related (simple heuristic)
-                if self.is_food_related(label):
-                    food_predictions.append({
-                        "food_name": label.replace('_', ' ').title(),
-                        "confidence": float(confidence),
-                        "category": self.categorize_food(label)
-                    })
+            # Get results
+            predicted_class_idx = np.argmax(predictions[0])
+            confidence = predictions[0][predicted_class_idx]
+            predicted_class = self.food_classes[predicted_class_idx]
             
-            # If we found food predictions, return them
-            if food_predictions:
-                return {
-                    "top_prediction": food_predictions[0],
-                    "all_predictions": food_predictions[:5],  # Top 5 food predictions
-                    "model_used": "mobilenet_v2_imagenet",
-                    "total_predictions": len(food_predictions)
+            print(f"\n🎯 FINAL PREDICTION:")
+            print(f"   Index: {predicted_class_idx}")
+            print(f"   Class: {predicted_class}")
+            print(f"   Confidence: {confidence:.4f} ({confidence*100:.2f}%)")
+            
+            # Get top 5 predictions
+            top_5_indices = np.argsort(predictions[0])[-5:][::-1]
+            print(f"\n🔝 Top 5 predictions:")
+            
+            all_predictions = []
+            
+            for i, idx in enumerate(top_5_indices):
+                prediction_item = {
+                    "food_name": self.food_classes[idx],
+                    "confidence": float(predictions[0][idx]),
+                    "category": "fruit" if self.food_classes[idx] in ["Apple", "Banana", "Orange", "Grapes", "Strawberry", "Blueberry", "Blackberry", "Kiwi", "Lemon", "Mango", "Pineapple", "Watermelon", "Pear", "Fig", "Pomegranate", "Dates"] else "vegetable"
                 }
-            else:
-                # If no clear food predictions, return the top prediction anyway
-                top_pred = decoded_predictions[0][0]
-                return {
-                    "top_prediction": {
-                        "food_name": top_pred[1].replace('_', ' ').title(),
-                        "confidence": float(top_pred[2]),
-                        "category": "general"
-                    },
-                    "all_predictions": [{
-                        "food_name": top_pred[1].replace('_', ' ').title(),
-                        "confidence": float(top_pred[2]),
-                        "category": "general"
-                    }],
-                    "model_used": "mobilenet_v2_imagenet",
-                    "note": "Using general ImageNet classification"
-                }
+                all_predictions.append(prediction_item)
+                print(f"   {i+1}. {prediction_item['food_name']:15s}: {prediction_item['confidence']:.4f} ({prediction_item['confidence']*100:.2f}%)")
+            
+            return {
+                "top_prediction": all_predictions[0],
+                "all_predictions": all_predictions,
+                "model_used": "vgg16_fine_tuned_fruits_vegetables",
+                "total_predictions": len(all_predictions)
+            }
             
         except Exception as e:
+            print(f"❌ Prediction error details: {str(e)}")
+            import traceback
+            traceback.print_exc()
             raise RuntimeError(f"Prediction error: {str(e)}")
     
     def is_food_related(self, label):
@@ -208,20 +325,38 @@ class ProfessionalFoodService:
             
             print(f"🔍 Searching nutrition for: {clean_name}")
             
-            # Try USDA API first
+            # Try USDA API first with better query
             usda_url = "https://api.nal.usda.gov/fdc/v1/foods/search"
+            
+            # Add "raw" or "fresh" to get unprocessed food results
+            search_terms = f"{clean_name} raw fresh"
+            
             params = {
-                'query': clean_name,
-                'api_key': 'DEMO_KEY',  # Free demo key
-                'pageSize': 3
+                'query': search_terms,
+                'api_key': 'DEMO_KEY',
+                'pageSize': 5,
+                'dataType': ['Survey (FNDDS)', 'SR Legacy']
             }
             
             response = requests.get(usda_url, params=params, timeout=10)
             if response.status_code == 200:
                 data = response.json()
                 if data['foods']:
-                    # Find the best match
-                    best_match = data['foods'][0]
+                    # Filter for raw/fresh foods
+                    best_match = None
+                    for food in data['foods']:
+                        description = food.get('description', '').lower()
+                        if ('raw' in description or 'fresh' in description or 
+                            description.startswith(clean_name)):
+                            best_match = food
+                            break
+                    
+                    if not best_match:
+                        best_match = data['foods'][0]
+                    
+                    print(f"✅ Found: {best_match.get('description', '')}")
+                    
+                    # FIX: Extract nutrition values properly
                     nutrients = {}
                     
                     for nutrient in best_match.get('foodNutrients', []):
@@ -229,27 +364,47 @@ class ProfessionalFoodService:
                         value = nutrient.get('value', 0)
                         unit = nutrient.get('unitName', '')
                         
+                        # FIX: Properly extract and convert values
                         if 'Energy' in name and ('kcal' in unit.lower() or 'calorie' in name.lower()):
-                            nutrients['calories'] = f"{value} {unit}"
+                            nutrients['calories'] = float(value) if value else 0
                         elif 'Protein' in name:
-                            nutrients['protein'] = f"{value} {unit}"
-                        elif 'Total lipid' in name or 'Fat' in name:
-                            nutrients['fat'] = f"{value} {unit}"
+                            nutrients['protein'] = float(value) if value else 0
+                        elif 'Total lipid' in name or 'Fat' in name or 'Fatty acids' in name:
+                            nutrients['fats'] = float(value) if value else 0
                         elif 'Carbohydrate' in name:
-                            nutrients['carbs'] = f"{value} {unit}"
+                            nutrients['carbs'] = float(value) if value else 0
                         elif 'Fiber' in name:
-                            nutrients['fiber'] = f"{value} {unit}"
+                            nutrients['fiber'] = float(value) if value else 0
                         elif 'Sugar' in name:
-                            nutrients['sugar'] = f"{value} {unit}"
+                            nutrients['sugar'] = float(value) if value else 0
+                    
+                    # FIX: Add fallback values if fats is 0
+                    if nutrients.get('fats', 0) == 0:
+                        # Use known fat values for common foods
+                        known_fat_values = {
+                            'avocado': 14.7, 'pizza': 8.0, 'cheese': 9.0, 'chicken': 3.6,
+                            'beef': 15.0, 'pork': 20.0, 'salmon': 13.0, 'egg': 5.0,
+                            'milk': 3.6, 'yogurt': 3.3, 'butter': 81.0, 'oil': 100.0,
+                            'nuts': 50.0, 'seeds': 45.0, 'chocolate': 30.0, 'bread': 1.0
+                        }
+                        
+                        for food, fat_value in known_fat_values.items():
+                            if food in clean_name:
+                                nutrients['fats'] = fat_value
+                                print(f"🔄 Using known fat value for {clean_name}: {fat_value}g")
+                                break
                     
                     if nutrients:
                         return {
                             'success': True,
                             'food_name': best_match.get('description', food_name),
-                            'nutrients': nutrients,
-                            'source': 'USDA FoodData Central',
-                            'serving_size': best_match.get('servingSize', 'N/A'),
-                            'serving_unit': best_match.get('servingSizeUnit', 'N/A')
+                            'data': {
+                                'nutrients': nutrients,
+                                'source': 'USDA FoodData Central',
+                                'serving_size': best_match.get('servingSize', 'N/A'),
+                                'serving_unit': best_match.get('servingSizeUnit', 'N/A'),
+                                'success': True
+                            }
                         }
             
             # Fallback to Open Food Facts
@@ -272,10 +427,34 @@ class ProfessionalFoodService:
                         nutrition_data['calories'] = f"{nutrients['energy-kcal_100g']} kcal/100g"
                     if nutrients.get('proteins_100g'):
                         nutrition_data['protein'] = f"{nutrients['proteins_100g']}g/100g"
-                    if nutrients.get('fat_100g'):
-                        nutrition_data['fat'] = f"{nutrients['fat_100g']}g/100g"
+                    if nutrients.get('fat_100g'):  
+                         nutrition_data['fats'] = f"{nutrients['fat_100g']}g/100g"
                     if nutrients.get('carbohydrates_100g'):
                         nutrition_data['carbs'] = f"{nutrients['carbohydrates_100g']}g/100g"
+                    if nutrients.get('fiber_100g'):
+                        nutrition_data['fiber'] = f"{nutrients['fiber_100g']}g/100g"
+                    if nutrients.get('sugars_100g'):
+                        nutrition_data['sugar'] = f"{nutrients['sugars_100g']}g/100g"
+                    
+                    if 'fats' not in nutrition_data:
+                        print(f"🔄 Open Food Facts missing fats for {clean_name}, adding fallback")
+                        known_fat_values = {
+                            'apple': 0.2, 'avocado': 14.7, 'banana': 0.3, 'blackberry': 0.4,
+                            'blueberry': 0.3, 'broccoli': 0.4, 'cabbage': 0.1, 'capsicum': 0.2,
+                            'carrot': 0.2, 'corn': 1.2, 'cucumber': 0.1, 'dates': 0.4,
+                            'eggplant': 0.2, 'fig': 0.3, 'garlic': 0.5, 'grapes': 0.4,
+                            'kiwi': 0.5, 'lemon': 0.3, 'lettuce': 0.2, 'mango': 0.4,
+                            'mushroom': 0.3, 'olive': 11.0, 'onion': 0.1, 'orange': 0.1,
+                            'pear': 0.1, 'peas': 0.4, 'pineapple': 0.1, 'pomegranate': 0.3,
+                            'potato': 0.1, 'pumpkin': 0.1, 'raddish': 0.1, 'strawberry': 0.3,
+                            'tomato': 0.2, 'watermelon': 0.2
+                        }
+                        
+                        for food, fat_value in known_fat_values.items():
+                            if food in clean_name:
+                                nutrition_data['fats'] = f"{fat_value}g/100g"
+                                print(f"✅ Added fat value for {clean_name}: {fat_value}g")
+                                break
                     
                     if nutrition_data:
                         return {

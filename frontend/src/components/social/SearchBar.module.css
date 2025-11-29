@@ -1,0 +1,180 @@
+.searchContainer {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+}
+
+.searchInputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 2px solid var(--gray-medium);
+  border-radius: 25px;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.clearButton {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clearButton:hover {
+  background: var(--gray-light);
+  color: var(--text-primary);
+}
+
+.searchDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--gray-medium);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  margin-top: 0.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.loading, .noResults {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.resultsContainer {
+  padding: 1rem 0;
+}
+
+.resultSection {
+  margin-bottom: 1rem;
+}
+
+.resultSection:last-child {
+  margin-bottom: 0;
+}
+
+.resultSection h4 {
+  margin: 0 0 0.5rem 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.resultItem {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.resultItem:hover {
+  background: var(--gray-light);
+  border-left-color: var(--primary-green);
+}
+
+.hashtagIcon, .userIcon {
+  margin-right: 0.75rem;
+  color: var(--primary-green);
+  font-size: 1.1rem;
+}
+
+.hashtag {
+  font-weight: 600;
+  color: var(--primary-green);
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.userEmail {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.postContent {
+  flex: 1;
+}
+
+.postText {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+.postAuthor {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .searchContainer {
+    max-width: 100%;
+  }
+  
+  .searchDropdown {
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    top: 120px;
+    max-height: 60vh;
+  }
+}

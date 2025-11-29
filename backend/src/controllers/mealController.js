@@ -34,7 +34,7 @@ const createMeal = async (req, res) => {
       calories: parseInt(calories),
       protein: parseFloat(protein) || 0,
       carbs: parseFloat(carbs) || 0,
-      fat: parseFloat(fats) || 0,
+      fats: parseFloat(fats) || 0,  
       ingredients: ingredients || [],
       isCustom: true,
       createdBy: req.userId
@@ -183,7 +183,7 @@ const updateMeal = async (req, res) => {
         calories: parseInt(calories),
         protein: parseFloat(protein) || 0,
         carbs: parseFloat(carbs) || 0,
-        fat: parseFloat(fats) || 0,
+        fats: parseFloat(fats) || 0,  
         ingredients: ingredients || []
       },
       { new: true, runValidators: true }

@@ -7,13 +7,14 @@ const MealItem = ({
   showTime = false,
   showDate = false,
   showCalories = true,
-  showMacros = false,
+  showMacros = true, // Changed to true by default
   compact = false,
   onEdit,
   onDelete,
   onClick
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showFullDetails, setShowFullDetails] = useState(false);
 
   const formatTime = (dateString) => {
     return new Date(dateString).toLocaleTimeString([], {
@@ -63,6 +64,14 @@ const MealItem = ({
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const toggleDetails = (e) => {
+    e.stopPropagation();
+    setShowFullDetails(!showFullDetails);
+  };
+
+  // Get meal data from either meal.mealId (populated) or directly from meal
+  const mealDetails = meal.mealId || meal;
+
   return (
     <div 
       className={`${styles.mealItem} ${compact ? styles.compact : ''}`}
@@ -77,17 +86,17 @@ const MealItem = ({
             {getMealTypeIcon(meal.mealType)}
           </span>
           <div className={styles.mealInfo}>
-            <h4 className={styles.mealName}>{meal.name}</h4>
-            {meal.description && (
-              <p className={styles.mealDescription}>{meal.description}</p>
-            )}
+            <h4 className={styles.mealName}>{mealDetails.name}</h4>
+            <div className={styles.mealTypeBadge}>
+              {meal.mealType}
+            </div>
           </div>
         </div>
         
         <div className={styles.mealActions}>
           {showCalories && (
             <div className={styles.calories}>
-              {meal.calories} kcal
+              {meal.calories || mealDetails.calories} kcal
             </div>
           )}
           
@@ -120,6 +129,30 @@ const MealItem = ({
         </div>
       </div>
 
+      {/* Description */}
+      {mealDetails.description && (
+        <div className={styles.description}>
+          {mealDetails.description}
+        </div>
+      )}
+
+      {/* Nutrition Information */}
+      <div className={styles.nutritionGrid}>
+        <div className={styles.nutritionItem}>
+          <span className={styles.nutritionLabel}>Protein:</span>
+          <span className={styles.nutritionValue}>{meal.protein || mealDetails.protein || 0}g</span>
+        </div>
+        <div className={styles.nutritionItem}>
+          <span className={styles.nutritionLabel}>Carbs:</span>
+          <span className={styles.nutritionValue}>{meal.carbs || mealDetails.carbs || 0}g</span>
+        </div>
+        <div className={styles.nutritionItem}>
+          <span className={styles.nutritionLabel}>Fats:</span>
+          <span className={styles.nutritionValue}>{meal.fats || mealDetails.fats || 0}g</span>
+        </div>
+      </div>
+
+      {/* Time Information */}
       {(showTime || showDate) && (
         <div className={styles.timeInfo}>
           {showTime && (
@@ -137,39 +170,42 @@ const MealItem = ({
         </div>
       )}
 
-      {showMacros && meal.nutrition && (
-        <div className={styles.macrosInfo}>
-          <div className={styles.macroItem}>
-            <span className={styles.macroLabel}>Protein:</span>
-            <span className={styles.macroValue}>{meal.nutrition.protein}g</span>
-          </div>
-          <div className={styles.macroItem}>
-            <span className={styles.macroLabel}>Carbs:</span>
-            <span className={styles.macroValue}>{meal.nutrition.carbs}g</span>
-          </div>
-          <div className={styles.macroItem}>
-            <span className={styles.macroLabel}>Fats:</span>
-            <span className={styles.macroValue}>{meal.nutrition.fats}g</span>
-          </div>
-        </div>
-      )}
+      {/* Expandable Details */}
+      <button className={styles.detailsToggle} onClick={toggleDetails}>
+        {showFullDetails ? 'Show Less' : 'Show More Details'}
+      </button>
 
-      {meal.ingredients && meal.ingredients.length > 0 && (
-        <div className={styles.ingredientsInfo}>
-          <div className={styles.ingredientsLabel}>Ingredients:</div>
-          <div className={styles.ingredientsList}>
-            {meal.ingredients.slice(0, 3).map((ingredient, index) => (
-              <span key={index} className={styles.ingredient}>
-                {ingredient}
-                {index < Math.min(meal.ingredients.length, 3) - 1 && ', '}
-              </span>
-            ))}
-            {meal.ingredients.length > 3 && (
-              <span className={styles.moreIngredients}>
-                +{meal.ingredients.length - 3} more
-              </span>
-            )}
-          </div>
+      {showFullDetails && (
+        <div className={styles.expandedDetails}>
+          {/* Ingredients */}
+          {mealDetails.ingredients && mealDetails.ingredients.length > 0 && (
+            <div className={styles.detailSection}>
+              <div className={styles.detailLabel}>Ingredients:</div>
+              <div className={styles.ingredientsList}>
+                {mealDetails.ingredients.map((ingredient, index) => (
+                  <span key={index} className={styles.ingredient}>
+                    {ingredient}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Serving Size */}
+          {mealDetails.servingSize && (
+            <div className={styles.detailSection}>
+              <div className={styles.detailLabel}>Serving Size:</div>
+              <div className={styles.detailValue}>{mealDetails.servingSize}</div>
+            </div>
+          )}
+
+          {/* Notes */}
+          {meal.notes && (
+            <div className={styles.detailSection}>
+              <div className={styles.detailLabel}>Notes:</div>
+              <div className={styles.detailValue}>{meal.notes}</div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -177,7 +213,6 @@ const MealItem = ({
 };
 
 export default MealItem;
-
 
 
 

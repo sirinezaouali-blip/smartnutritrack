@@ -1,0 +1,328 @@
+.recoveryCard {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-light);
+  border: 2px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.recoveryCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.titleSection {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.titleIcon {
+  font-size: 20px;
+  color: var(--primary-green);
+}
+
+.title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.exceedanceBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  color: white;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.badgeIcon {
+  font-size: 14px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.exceedanceInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.exceedanceStats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--light-green);
+  border-radius: var(--radius-md);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.statLabel {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: var(--spacing-xs);
+}
+
+.statValue {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--primary-green);
+}
+
+.recoveryOptions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.actionButton:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-light);
+}
+
+.primary {
+  background: var(--primary-green);
+  color: white;
+}
+
+.primary:hover {
+  background: var(--primary-green-dark);
+}
+
+.secondary {
+  background: var(--secondary);
+  color: white;
+}
+
+.secondary:hover {
+  background: var(--secondary-dark);
+}
+
+.sports {
+  background: linear-gradient(135deg, var(--primary-green), var(--secondary));
+  color: white;
+}
+
+.free {
+  background: var(--success);
+  color: white;
+}
+
+.free:hover {
+  background: var(--success-dark);
+}
+
+.buttonIcon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.buttonDesc {
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  opacity: 0.9;
+  margin-top: var(--spacing-xs);
+}
+
+.noExceedance {
+  text-align: center;
+  padding: var(--spacing-lg);
+}
+
+.successIcon {
+  font-size: 48px;
+  color: var(--success);
+  margin-bottom: var(--spacing-md);
+}
+
+.noExceedance h4 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: var(--spacing-md) 0 var(--spacing-sm) 0;
+}
+
+.noExceedance p {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+.loading {
+  text-align: center;
+  padding: var(--spacing-xl);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--gray-light);
+  border-top: 4px solid var(--primary-green);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto var(--spacing-md) auto;
+}
+
+.loading p {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.error {
+  text-align: center;
+  padding: var(--spacing-xl);
+}
+
+.errorIcon {
+  font-size: 48px;
+  color: var(--error);
+  margin-bottom: var(--spacing-md);
+}
+
+.error p {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+.retryButton {
+  background: var(--primary-green);
+  color: white;
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.retryButton:hover {
+  background: var(--primary-green-dark);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .recoveryCard {
+    padding: var(--spacing-md);
+  }
+
+  .header {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+  }
+
+  .exceedanceBadge {
+    align-self: flex-end;
+  }
+
+  .exceedanceStats {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .recoveryOptions {
+    gap: var(--spacing-xs);
+  }
+
+  .actionButton {
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+  }
+
+  .buttonIcon {
+    font-size: 16px;
+  }
+
+  .buttonDesc {
+    font-size: var(--font-size-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .recoveryCard {
+    padding: var(--spacing-sm);
+  }
+
+  .title {
+    font-size: var(--font-size-base);
+  }
+
+  .exceedanceStats {
+    padding: var(--spacing-sm);
+  }
+
+  .statValue {
+    font-size: var(--font-size-base);
+  }
+
+  .noExceedance {
+    padding: var(--spacing-md);
+  }
+
+  .successIcon,
+  .errorIcon {
+    font-size: 36px;
+  }
+}
+
+/* Animations */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.recoveryCard {
+  animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

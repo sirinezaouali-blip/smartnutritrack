@@ -41,6 +41,38 @@ class AIService {
     );
   }
 
+  // Scan fruits and vegetables using custom CNN model
+async scanFruitsVegetables(imageBuffer, filename) {
+  try {
+    console.log('🍎 Sending fruits/vegetables image to AI API...');
+
+    const FormData = require('form-data');
+    const form = new FormData();
+    form.append('image', imageBuffer, {
+      filename: filename || 'produce.jpg',
+      contentType: 'image/jpeg'
+    });
+
+    const response = await axios.post(
+      `${this.fastApiBaseUrl}/api/scan/fruits-vegetables`, // NEW ENDPOINT
+      form,
+      {
+        headers: {
+          ...form.getHeaders(),
+        },
+        timeout: 30000
+      }
+    );
+
+    console.log('✅ Fruits/Vegetables recognition successful');
+    return response.data;
+
+  } catch (error) {
+    console.error('❌ Fruits/Vegetables recognition error:', error.message);
+    throw new Error(`Fruits/Vegetables recognition failed: ${error.message}`);
+  }
+}
+
   // Food Scanning Services
   async scanFood(imageFile) {
     try {
@@ -359,6 +391,11 @@ export const analyzeDishImage = (formData) => aiServiceInstance.analyzeDishImage
 export const analyzeProduceImage = (formData) => aiServiceInstance.analyzeProduceImage(formData);
 
 export const aiService = aiServiceInstance;
+
+
+
+
+
 
 
 

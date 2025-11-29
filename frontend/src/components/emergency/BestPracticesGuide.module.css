@@ -1,0 +1,417 @@
+/* Best Practices Guide Styles - Matching Low Carb Page Design */
+.bestPracticesContainer {
+  background-color: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow-light);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--gray-light);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.title svg {
+  color: #ff6b6b;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Status Overview */
+.statusOverview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.statusCard {
+  background-color: var(--gray-light);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  border-left: 4px solid var(--primary-green);
+}
+
+.statusLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.statusValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-green);
+  margin-bottom: 4px;
+}
+
+.statusUnit {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Recommendations */
+.recommendations {
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+.recommendationsGrid {
+  display: grid;
+  gap: 20px;
+}
+
+.recommendationCard {
+  background-color: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  border-left: 4px solid var(--gray-medium);
+}
+
+.recommendationCard:hover {
+  box-shadow: var(--shadow-light);
+  transform: translateY(-1px);
+}
+
+.recommendationCard.emergency {
+  border-left-color: #F44336;
+  background-color: #fff3cd;
+  border-color: #ffeaa7;
+}
+
+.recommendationCard.protein {
+  border-left-color: #4CAF50;
+}
+
+.recommendationCard.carbs {
+  border-left-color: #FF9800;
+}
+
+.recommendationCard.general {
+  border-left-color: #2196F3;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.cardIcon {
+  font-size: 1.5rem;
+  color: inherit;
+}
+
+.cardTitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.cardDescription {
+  color: var(--text-secondary);
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.actionsList {
+  margin-bottom: 16px;
+}
+
+.actionsTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+}
+
+.actions {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.actionItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.actionIcon {
+  color: var(--primary-green);
+  flex-shrink: 0;
+  margin-top: 2px;
+  font-size: 0.8rem;
+}
+
+.scientificBasis {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  border-top: 1px solid var(--gray-light);
+  padding-top: 12px;
+  margin-top: 12px;
+  line-height: 1.4;
+}
+
+.scientificBasis strong {
+  color: var(--text-primary);
+}
+
+/* Emergency Macro Targets Section */
+.macroTargets {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--gray-light);
+}
+
+.macroGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.macroTarget {
+  background: var(--gray-light);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.macroHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.macroName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.macroRange {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  background: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.macroBar {
+  height: 12px;
+  background: #e9ecef;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.macroFill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+.macroFill.protein {
+  background: linear-gradient(90deg, #4CAF50, #45a049);
+}
+
+.macroFill.carbs {
+  background: linear-gradient(90deg, #2196F3, #1976D2);
+}
+
+.macroFill.fat {
+  background: linear-gradient(90deg, #FF9800, #F57C00);
+}
+
+.macroCurrent {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Recovery Protocol */
+.recoveryProtocol {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--gray-light);
+}
+
+.protocolSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.protocolStep {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  background: var(--gray-light);
+  border-radius: 12px;
+}
+
+.stepNumber {
+  width: 32px;
+  height: 32px;
+  background: var(--primary-green);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.stepContent h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.stepContent p {
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive Design for Macro Targets */
+@media (max-width: 768px) {
+  .macroGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .macroTarget {
+    padding: 16px;
+  }
+  
+  .protocolStep {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .stepNumber {
+    align-self: center;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .bestPracticesContainer {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .statusOverview {
+    grid-template-columns: 1fr;
+  }
+
+  .statusCard {
+    padding: 16px;
+  }
+
+  .statusValue {
+    font-size: 1.8rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.3rem;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .cardTitle {
+    font-size: 1.2rem;
+  }
+
+  .recommendationCard {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bestPracticesContainer {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .statusCard {
+    padding: 14px;
+  }
+
+  .statusValue {
+    font-size: 1.6rem;
+  }
+
+  .recommendationCard {
+    padding: 14px;
+  }
+}

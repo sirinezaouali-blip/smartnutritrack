@@ -31,6 +31,28 @@ const Cart = () => {
     loadCartItems();
   }, []);
 
+  useEffect(() => {
+  // Clean up any corrupted cart data
+  const cleanupCartData = () => {
+    try {
+      const savedCart = localStorage.getItem('cartItems');
+      if (savedCart) {
+        const cartItems = JSON.parse(savedCart);
+        const cleanedItems = cartItems.map(item => ({
+          ...item,
+          price: typeof item.price === 'number' ? item.price : 0
+        }));
+        localStorage.setItem('cartItems', JSON.stringify(cleanedItems));
+        setCartItems(cleanedItems);
+      }
+    } catch (error) {
+      console.error('Error cleaning cart data:', error);
+    }
+  };
+
+  cleanupCartData();
+}, []);
+
   const updateCartInStorage = (items) => {
     localStorage.setItem('cartItems', JSON.stringify(items));
   };
@@ -138,7 +160,7 @@ const Cart = () => {
                     </span>
                     {item.price && (
                       <span className={styles.price}>
-                        ${item.price.toFixed(2)}
+                        ${typeof item.price === 'number' ? item.price.toFixed(2) : '0.00'}
                       </span>
                     )}
                   </div>
@@ -166,7 +188,7 @@ const Cart = () => {
                   </div>
                   {item.price && (
                     <div className={styles.totalPrice}>
-                      ${(item.price * item.quantity).toFixed(2)}
+                      ${(typeof item.price === 'number' ? item.price * item.quantity : 0).toFixed(2)}
                     </div>
                   )}
                 </div>

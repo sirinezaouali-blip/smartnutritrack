@@ -1,0 +1,239 @@
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  min-width: 350px;
+  max-width: 500px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-medium);
+  border: 2px solid;
+  z-index: 1000;
+  overflow: hidden;
+  animation: slideInRight 0.3s ease-out;
+}
+
+.fadeOut {
+  animation: fadeOut 0.3s ease-in forwards;
+}
+
+.content {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconComponent {
+  font-size: 20px;
+}
+
+.text {
+  flex: 1;
+}
+
+.title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.message {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  text-decoration: underline;
+}
+
+.actionButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.closeButton {
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: 16px;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.progressBar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.progressFill {
+  height: 100%;
+  transition: width 0.1s linear;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* Animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .notification {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    min-width: auto;
+    max-width: none;
+  }
+
+  .content {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+
+  .icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .iconComponent {
+    font-size: 16px;
+  }
+
+  .title {
+    font-size: var(--font-size-sm);
+  }
+
+  .message {
+    font-size: var(--font-size-xs);
+  }
+
+  .actionButton {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs);
+  }
+
+  .closeButton {
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification {
+    top: 5px;
+    right: 5px;
+    left: 5px;
+  }
+
+  .content {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-xs);
+  }
+
+  .actions {
+    justify-content: center;
+  }
+
+  .icon {
+    align-self: center;
+  }
+}
+
+/* Notification Types */
+.notification.success {
+  border-color: #4CAF50;
+}
+
+.notification.success .icon {
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.notification.warning {
+  border-color: #FF9800;
+}
+
+.notification.warning .icon {
+  background: rgba(255, 152, 0, 0.1);
+}
+
+.notification.error {
+  border-color: #F44336;
+}
+
+.notification.error .icon {
+  background: rgba(244, 67, 54, 0.1);
+}
+
+.notification.info {
+  border-color: #2196F3;
+}
+
+.notification.info .icon {
+  background: rgba(33, 150, 243, 0.1);
+}
+
+.notification.recovery {
+  border-color: #9C27B0;
+}
+
+.notification.recovery .icon {
+  background: rgba(156, 39, 176, 0.1);
+}

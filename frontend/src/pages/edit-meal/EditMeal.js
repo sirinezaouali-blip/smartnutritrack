@@ -14,7 +14,7 @@ const EditMeal = () => {
     calories: '',
     protein: '',
     carbs: '',
-    fat: '',
+    fats: '',
     mealType: 'breakfast',
     ingredients: [],
     servingSize: '',
@@ -38,8 +38,8 @@ const EditMeal = () => {
             calories: response.data.calories,
             protein: response.data.protein || '',
             carbs: response.data.carbs || '',
-            fat: response.data.fat || '', // Note: backend uses 'fat' not 'fats'
-            mealType: response.data.type, // Note: backend uses 'type' not 'mealType'
+            fats: response.data.fats || '', 
+            mealType: response.data.type, 
             ingredients: response.data.ingredients || [],
             servingSize: response.data.servingSize || '',
             servingUnit: 'g'
@@ -110,7 +110,7 @@ const EditMeal = () => {
         calories: mealData.calories,
         protein: mealData.protein || 0,
         carbs: mealData.carbs || 0,
-        fat: mealData.fat || 0, // Map 'fat' to 'fat' in backend
+        fats: mealData.fats || 0, 
         ingredients: mealData.ingredients.filter(ing => ing.trim() !== ''),
         servingSize: mealData.servingSize
       };
@@ -294,12 +294,12 @@ const EditMeal = () => {
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="fat">Fats (g)</label>
+              <label htmlFor="fats">Fats (g)</label>
               <input
                 type="number"
-                id="fat"
-                name="fat"
-                value={mealData.fat}
+                id="fats"
+                name="fats"
+                value={mealData.fats}
                 onChange={handleInputChange}
                 placeholder="0"
                 min="0"

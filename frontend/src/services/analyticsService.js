@@ -11,9 +11,10 @@ class AnalyticsService {
       },
     });
 
-    // Add token to requests
+    // Add token to requests (skip for AI scan endpoints)
     this.api.interceptors.request.use((config) => {
       const token = localStorage.getItem('token');
+      // Don't require auth for AI scanning endpoints - they're public
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -31,6 +32,97 @@ class AnalyticsService {
         return Promise.reject(error);
       }
     );
+  }
+
+
+  async getDetailedAnalytics(timeframe = 'week') {
+  try {
+    const response = await this.api.get(`/detailed?timeframe=${timeframe}`);
+    return response.data;
+  } catch (error) {
+    console.error('getDetailedAnalytics error:', error);
+    throw error;
+  }
+}
+
+async getMacronutrientDetails(timeframe = 'week') {
+  try {
+    const response = await this.api.get(`/macronutrient-details?timeframe=${timeframe}`);
+    return response.data;
+  } catch (error) {
+    console.error('getMacronutrientDetails error:', error);
+    throw error;
+  }
+}
+
+  // Mock data methods for development (remove when backend is ready)
+  getMockDetailedData(timeframe) {
+    const baseData = {
+      timeframe,
+      totals: {
+        calories: 1850,
+        protein: 120,
+        carbs: 210,
+        fats: 55
+      },
+      averages: {
+        calories: 1850,
+        protein: 120,
+        carbs: 210,
+        fats: 55
+      },
+      targets: {
+        calories: 2000,
+        protein: 150,
+        carbs: 250,
+        fats: 65
+      },
+      percentages: {
+        calories: 93,
+        protein: 80,
+        carbs: 84,
+        fats: 85
+      },
+      macroDistribution: {
+        protein: 25,
+        carbs: 50,
+        fats: 25
+      },
+      mealTypeDistribution: {
+        breakfast: { calories: 450, count: 7 },
+        lunch: { calories: 650, count: 7 },
+        dinner: { calories: 600, count: 7 },
+        snack: { calories: 150, count: 14 }
+      },
+      mealCount: 35,
+      period: {
+        start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        end: new Date().toISOString().split('T')[0]
+      }
+    };
+
+    return baseData;
+  }
+
+  getMockMacroDetails(timeframe) {
+    const days = timeframe === 'week' ? 7 : timeframe === 'month' ? 30 : 1;
+    const dailyMacroData = [];
+    
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+      dailyMacroData.push({
+        date: date.toISOString().split('T')[0],
+        protein: Math.floor(Math.random() * 50) + 80,
+        carbs: Math.floor(Math.random() * 100) + 150,
+        fats: Math.floor(Math.random() * 30) + 30,
+        calories: Math.floor(Math.random() * 500) + 1500
+      });
+    }
+    
+    return {
+      dailyMacroData,
+      timeframe
+    };
   }
 
   async getDailyProgress(date) {
@@ -278,6 +370,39 @@ class AnalyticsService {
     }
   }
 
+  async deleteUserMeal(mealId) {
+    try {
+      // Use the user-meals API for deletion
+      const userMealsApi = axios.create({
+        baseURL: `${API_BASE_URL}/api/user-meals`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // Add token to requests
+      userMealsApi.interceptors.request.use((config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      });
+
+      const response = await userMealsApi.delete(`/${mealId}`);
+      return {
+        success: response.data.success,
+        message: response.data.message
+      };
+    } catch (error) {
+      console.error('deleteUserMeal error:', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
 
   createMealBreakdown(mealsByType) {
     const mealTypes = ['breakfast', 'lunch', 'dinner', 'snack'];
@@ -298,6 +423,13 @@ class AnalyticsService {
       if (timeframe === 'today' || timeframe === 'daily') {
         const today = new Date().toISOString().split('T')[0];
         response = await this.api.get(`/daily/${today}`);
+        console.log('🔍 ANALYTICS API RAW RESPONSE:', {
+          url: `/daily/${today}`,
+          fullResponse: response.data,
+          targets: response.data?.data?.targets,
+          totals: response.data?.data?.totals
+        });
+
       } else if (timeframe === 'weekly') {
         response = await this.api.get('/weekly');
       } else if (timeframe === 'monthly') {
@@ -313,13 +445,13 @@ class AnalyticsService {
       if (timeframe === 'today' || timeframe === 'daily') {
         mappedData = {
           caloriesConsumed: backendData?.totals?.calories || 0,
-          caloriesTarget: backendData?.targets?.calories || 2000,
+          caloriesTarget: backendData?.targets?.calories,
           proteinConsumed: backendData?.totals?.protein || 0,
-          proteinTarget: backendData?.targets?.protein || 150,
+          proteinTarget: backendData?.targets?.protein,
           carbsConsumed: backendData?.totals?.carbs || 0,
-          carbsTarget: backendData?.targets?.carbs || 250,
-          fatConsumed: backendData?.totals?.fat || 0,
-          fatTarget: backendData?.targets?.fat || 67,
+          carbsTarget: backendData?.targets?.carbs,
+          fatsConsumed: backendData?.totals?.fats || 0,
+          fatsTarget: backendData?.targets?.fats || backendData?.targets?.fat,
           averageCalories: backendData?.totals?.calories || 0,
           streak: 0,
           waterIntake: 0,
@@ -491,9 +623,10 @@ const analyticsServiceInstance = new AnalyticsService();
 export const fetchAnalyticsData = (timeframe) => analyticsServiceInstance.fetchAnalyticsData(timeframe);
 export const fetchUserMeals = (date) => analyticsServiceInstance.fetchUserMeals(date);
 export const fetchMealHistory = (page, limit) => analyticsServiceInstance.fetchMealHistory(page, limit);
-
+export const deleteUserMeal = (mealId) => analyticsServiceInstance.deleteUserMeal(mealId);
 export const analyticsService = analyticsServiceInstance;
-
+export const getDetailedAnalytics = (timeframe) => analyticsServiceInstance.getDetailedAnalytics(timeframe);
+export const getMacronutrientDetails = (timeframe) => analyticsServiceInstance.getMacronutrientDetails(timeframe);
 
 
 

@@ -9,6 +9,7 @@ import cv2
 import numpy as np
 from PIL import Image
 import io
+from dish_service import DishRecognitionService
 
 app = FastAPI(title="SmartNutritrack AI Food API")
 
@@ -23,18 +24,25 @@ app.add_middleware(
 
 # Global service instance
 food_service = ProfessionalFoodService()
+dish_service = DishRecognitionService()
 
 @app.get("/")
 async def root():
     return {
         "message": "SmartNutritrack AI Food API - Real Food Recognition",
-        "status": "healthy",
-        "model_loaded": food_service.model is not None,
+        "status": "healthy", 
+        "models_loaded": {
+            "fruits_vegetables": food_service.model is not None,
+            "general_dishes": dish_service.model is not None
+        },
         "endpoints": [
             "GET /health",
-            "POST /api/scan/food",
+            "POST /api/scan/food",           # Fruits & Vegetables (VGG16)
+            "POST /api/scan/dish",           # General Dishes (MobileNetV2) 
             "POST /api/scan/barcode",
-            "POST /api/nutrition/{food_name}"
+            "GET /api/nutrition/{food_name}",
+            "POST /api/planner/suggest",
+            "POST /api/recommend-meal"
         ]
     }
 
@@ -42,9 +50,20 @@ async def root():
 async def health_check():
     return {
         "status": "healthy",
-        "model_loaded": food_service.model is not None,
-        "service": "professional_food_recognition",
-        "features": ["food_recognition", "barcode_scanning", "nutrition_api"]
+        "models_loaded": {
+            "fruits_vegetables_vgg16": food_service.model is not None,
+            "general_dishes_mobilenetv2": dish_service.model is not None
+        },
+        "services": [
+            "professional_food_recognition", 
+            "dish_recognition_service"
+        ],
+        "features": [
+            "food_recognition", 
+            "dish_recognition", 
+            "barcode_scanning", 
+            "nutrition_api"
+        ]
     }
 
 @app.post("/api/scan/food")
@@ -178,7 +197,7 @@ async def get_product_from_barcode(barcode: str):
                     "calories": nutriments.get("energy-kcal_100g"),
                     "protein": nutriments.get("proteins_100g"),
                     "carbs": nutriments.get("carbohydrates_100g"),
-                    "fat": nutriments.get("fat_100g"),
+                    "fats": nutriments.get("fats_100g"),
                     "sugar": nutriments.get("sugars_100g"),
                     "fiber": nutriments.get("fiber_100g"),
                     "sodium": nutriments.get("sodium_100g")
@@ -264,7 +283,7 @@ async def suggest_meals(user_preferences: dict):
                         "calories": rec.get('calories', 0),
                         "protein": meal_data.get('protein', 0),
                         "carbs": meal_data.get('carbs', 0),
-                        "fat": meal_data.get('fat', 0),
+                        "fats": meal_data.get('fats', 0),
                         "ingredients": meal_data.get('ingredients', []),
                         "mealType": meal_type
                     })
@@ -279,7 +298,7 @@ async def suggest_meals(user_preferences: dict):
                     "calories": meal_target_calories,
                     "protein": int(meal_target_calories * 0.25 / 4),  # ~25% from protein
                     "carbs": int(meal_target_calories * 0.50 / 4),   # ~50% from carbs
-                    "fat": int(meal_target_calories * 0.25 / 9),     # ~25% from fat
+                    "fats": int(meal_target_calories * 0.25 / 9),     # ~25% from fats
                     "ingredients": ["Various healthy ingredients"],
                     "mealType": meal_type
                 }
@@ -351,6 +370,63 @@ async def recommend_meal(meal_request: dict):
         
     except Exception as e:
         raise HTTPException(500, f"Meal recommendation error: {str(e)}")
+    
+@app.post("/api/scan/dish")
+async def scan_dish(image: UploadFile = File(...)):
+    """Scan general dishes (pizza, burger, pasta, etc.) using MobileNetV2"""
+    try:
+        print(f"🍽️ Processing dish image: {image.filename}")
+        
+        # Validate image
+        if not image.content_type.startswith('image/'):
+            raise HTTPException(400, "File must be an image")
+        
+        # Read image data
+        image_data = await image.read()
+        if len(image_data) == 0:
+            raise HTTPException(400, "Empty image file")
+        
+        # Use dish service to recognize general dishes
+        prediction_result = dish_service.recognize_dish(image_data)
+        print(f"🎯 Prediction result keys: {prediction_result.keys()}")
+        
+        # Get nutrition data for the top prediction
+        nutrition_data = None
+        if prediction_result.get('predictions') and len(prediction_result['predictions']) > 0:
+            top_dish = prediction_result['predictions'][0]['food_name']
+            print(f"🔍 Getting nutrition for top dish: {top_dish}")
+            nutrition_data = dish_service.get_nutrition_for_dish(top_dish)
+            print(f"📊 Nutrition data source: {nutrition_data.get('source', 'unknown')}")
+            print(f"📊 Nutrition data content: {nutrition_data}")
+
+            if nutrition_data and nutrition_data.get('success') and 'nutrients' in nutrition_data:
+                    if 'fats' not in nutrition_data['nutrients']:
+                        print(f"🔄 Adding fat fallback for: {top_dish}")
+                        known_fat_values = {
+                            'pizza': 8.0, 'burger': 12.0, 'pasta': 2.0, 'sandwich': 10.0,
+                            'chicken': 3.6, 'beef': 15.0, 'fish': 5.0, 'rice': 0.3,
+                            'salad': 1.0, 'soup': 3.0, 'bread': 1.0, 'cheese': 9.0
+                        }
+                        
+                        for food, fat_value in known_fat_values.items():
+                            if food in top_dish.lower():
+                                nutrition_data['nutrients']['fats'] = f"{fat_value}g/100g"
+                                print(f"✅ Added fat value for {top_dish}: {fat_value}g")
+                                break
+        else:
+            print("⚠️ No predictions found for nutrition data")
+        
+        return {
+            "success": True,
+            "message": "Dish recognition completed",
+            "prediction": prediction_result,
+            "nutrition": nutrition_data,
+            "service_used": "dish_recognition_mobilenetv2"
+        }
+        
+    except Exception as e:
+        raise HTTPException(500, f"Dish recognition error: {str(e)}")
+        
 
 if __name__ == "__main__":
     print("🚀 Starting SmartNutritrack AI Food API...")

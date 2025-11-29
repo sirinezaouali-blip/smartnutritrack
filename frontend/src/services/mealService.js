@@ -96,8 +96,6 @@ class MealService {
     }
   }
 
-
-
   // Save a meal for the user
   async saveMeal(mealData) {
     try {
@@ -109,7 +107,7 @@ class MealService {
         calories: mealData.calories,
         protein: mealData.protein,
         carbs: mealData.carbs,
-        fat: mealData.fat,
+        fats: mealData.fats,
         ingredients: mealData.ingredients,
         servingSize: mealData.servingSize,
         notes: mealData.notes
@@ -149,6 +147,30 @@ class MealService {
       throw error;
     }
   }
+
+  // Generate meal plan using Flask AI
+  async generateFlaskMealPlan(userInput, userProfile = {}) {
+    try {
+      const response = await this.api.post('/planner/flask-daily', {
+        user_input: userInput,
+        user_profile: userProfile
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // ✅ ADDED: Check meal plan status by request ID
+  async checkMealPlanStatus(requestId) {
+    try {
+      const response = await this.api.get(`/planner/meal-plan-status/${requestId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error checking meal plan status:', error);
+      throw error;
+    }
+  }
 }
 
 const mealServiceInstance = new MealService();
@@ -156,9 +178,12 @@ const mealServiceInstance = new MealService();
 // Named exports for backward compatibility
 export const saveMeal = (mealData) => mealServiceInstance.saveMeal(mealData);
 export const fetchMealPlans = () => mealServiceInstance.fetchMealPlans();
-
+export const generateFlaskMealPlan = (userInput, userProfile) => 
+  mealServiceInstance.generateFlaskMealPlan(userInput, userProfile);
+// ✅ ADDED: Export the new function
+export const checkMealPlanStatus = (requestId) => 
+  mealServiceInstance.checkMealPlanStatus(requestId);
 export const mealService = mealServiceInstance;
-
 
 
 

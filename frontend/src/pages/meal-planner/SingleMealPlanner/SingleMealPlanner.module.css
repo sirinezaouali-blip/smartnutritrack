@@ -445,6 +445,104 @@
   line-height: 1.5;
 }
 
+/* Add to SingleMealPlanner.module.css */
+
+.checkbox {
+  margin-right: 8px;
+}
+
+.helperText {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 4px 0 0 0;
+}
+
+.emergencyBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  color: #856404;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Add to SingleMealPlanner.module.css */
+
+.emergencyBanner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  color: #856404;
+}
+
+.emergencyBanner svg {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.emergencyContent h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.emergencyContent p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Add to SingleMealPlanner.module.css */
+
+.calorieStatus {
+  background-color: var(--gray-light);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--primary-green);
+}
+
+.calorieInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.calorieLabel {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.calorieValue {
+  color: var(--primary-green);
+  font-weight: 600;
+}
+
+.calorieRemaining {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.emergencyIndicator {
+  background-color: #ff6b6b;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .dailyMealPlanner {
@@ -534,6 +632,11 @@
     font-size: 0.7rem;
   }
 }
+
+
+
+
+
 
 
 

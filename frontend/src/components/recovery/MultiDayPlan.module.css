@@ -1,0 +1,415 @@
+.planCard {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--primary-green);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.titleSection {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.titleIcon {
+  font-size: 24px;
+  color: var(--primary-green);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.closeButton {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 24px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.closeButton:hover {
+  background: var(--gray-light);
+  color: var(--text-primary);
+}
+
+.summary {
+  background: var(--light-green);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.summaryStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.statLabel {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: var(--spacing-xs);
+}
+
+.statValue {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--primary-green);
+}
+
+.dailyPlans {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.dayCard {
+  background: var(--gray-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  border: 1px solid var(--gray-medium);
+}
+
+.dayHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.dayTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.dayIcon {
+  font-size: 18px;
+  color: var(--primary-green);
+}
+
+.dayTitle h4 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.dayReduction {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: var(--error-light);
+  color: var(--error);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.reductionIcon {
+  font-size: 14px;
+}
+
+.dayContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.adjustedCalories {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm);
+  background: white;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-medium);
+}
+
+.adjustedLabel {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.adjustedValue {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--primary-green);
+}
+
+.mealBreakdown h5,
+.exercise h5 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.exerciseIcon {
+  font-size: 16px;
+  color: var(--primary-green);
+}
+
+.mealGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.mealItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: white;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-medium);
+}
+
+.mealName {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.mealCalories {
+  font-size: var(--font-size-sm);
+  color: var(--primary-green);
+  font-weight: 600;
+}
+
+.exerciseDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.exerciseItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: white;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-medium);
+}
+
+.exerciseType {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+  min-width: 70px;
+}
+
+.exerciseValue {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-weight: 600;
+  flex: 1;
+  text-align: right;
+}
+
+.exerciseRationale {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--light-green);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--primary-green);
+}
+
+.footer {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--gray-medium);
+}
+
+.disclaimer {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--warning-light);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--warning);
+}
+
+.disclaimerIcon {
+  font-size: 20px;
+  color: var(--warning);
+  flex-shrink: 0;
+  margin-top: var(--spacing-xs);
+}
+
+.disclaimer p {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.loading {
+  text-align: center;
+  padding: var(--spacing-xl);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--gray-light);
+  border-top: 4px solid var(--primary-green);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto var(--spacing-md) auto;
+}
+
+.loading p {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.error {
+  text-align: center;
+  padding: var(--spacing-xl);
+}
+
+.errorIcon {
+  font-size: 48px;
+  color: var(--error);
+  margin-bottom: var(--spacing-md);
+}
+
+.error p {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+.retryButton {
+  background: var(--primary-green);
+  color: white;
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.retryButton:hover {
+  background: var(--primary-green-dark);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .planCard {
+    padding: var(--spacing-md);
+  }
+
+  .summaryStats {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .dayCard {
+    padding: var(--spacing-sm);
+  }
+
+  .mealGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .exerciseItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .exerciseValue {
+    text-align: left;
+  }
+
+  .disclaimer {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .planCard {
+    padding: var(--spacing-sm);
+  }
+
+  .title {
+    font-size: var(--font-size-lg);
+  }
+
+  .statValue {
+    font-size: var(--font-size-base);
+  }
+
+  .dayTitle h4 {
+    font-size: var(--font-size-base);
+  }
+
+  .adjustedValue {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Animations */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.planCard {
+  animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -37,7 +37,7 @@ const addUserMeal = async (req, res) => {
       calories: meal.calories * (quantity || 1),
       protein: meal.protein * (quantity || 1),
       carbs: meal.carbs * (quantity || 1),
-      fat: meal.fat * (quantity || 1)
+      fats: meal.fats * (quantity || 1)
     });
 
     // Populate meal details for response
@@ -91,10 +91,10 @@ const getUserMealsByDate = async (req, res) => {
         totals.calories += meal.calories;
         totals.protein += meal.protein;
         totals.carbs += meal.carbs;
-        totals.fat += meal.fat;
+        totals.fats += meal.fats;
       }
       return totals;
-    }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
+    }, { calories: 0, protein: 0, carbs: 0, fats: 0 });
 
     res.json({
       success: true,

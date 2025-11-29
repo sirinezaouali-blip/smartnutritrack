@@ -3,6 +3,188 @@ const Meal = require('../models/Meal');
 const { spawn } = require('child_process');
 const path = require('path');
 
+// ⚠️ MEAL PLAN STATUS TRACKING SYSTEM
+global.mealPlanResults = global.mealPlanResults || {};
+
+// Helper function to call Flask API with background processing
+const callFlaskAPI = async (data) => {
+  console.log('🔍 DEBUG: Starting Flask API call with background processing...');
+  console.log('🌐 DEBUG: Flask URL:', process.env.FLASK_API_URL + '/api/meal-plan');
+  console.log('📦 DEBUG: Request data length:', JSON.stringify(data).length);
+  
+  try {
+    console.log('🚀 DEBUG: Making background request to Flask...');
+    const startTime = Date.now();
+    
+    // Step 1: Start background processing in Flask
+    const response = await fetch(process.env.FLASK_API_URL + '/api/meal-plan', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+      timeout: 30000 // 30 seconds for initial request
+    });
+
+    const endTime = Date.now();
+    console.log('📡 DEBUG: Initial request completed in', (endTime - startTime) + 'ms, status:', response.status);
+    
+    if (!response.ok) {
+      console.log('❌ DEBUG: HTTP error - Status:', response.status);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const result = await response.json();
+    console.log('✅ DEBUG: Background task started successfully!');
+    console.log('📊 DEBUG: Task response:', result);
+
+    // Step 2: Check if this is a background task response
+    if (result.task_id && result.status_endpoint) {
+      console.log('🔄 DEBUG: Background task detected, starting polling...');
+      
+      // Poll for completion
+      const taskId = result.task_id;
+      let attempts = 0;
+      const maxAttempts = 180; // 30 minutes maximum (180 * 10 seconds)
+      
+      while (attempts < maxAttempts) {
+        attempts++;
+        
+        // Wait 10 seconds between checks
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        
+        console.log(`📊 DEBUG: Polling attempt ${attempts}/${maxAttempts} for task ${taskId}`);
+        
+        try {
+          const statusResponse = await fetch(
+            `${process.env.FLASK_API_URL}${result.status_endpoint}`,
+            { timeout: 10000 }
+          );
+          
+          if (statusResponse.ok) {
+            const statusData = await statusResponse.json();
+            console.log(`📈 DEBUG: Task status: ${statusData.status}, progress: ${statusData.progress}%`);
+            
+            if (statusData.status === 'completed') {
+              console.log('✅ DEBUG: Task completed successfully!');
+              return statusData.result; // Return the actual meal plan result
+            } else if (statusData.status === 'failed') {
+              console.log('❌ DEBUG: Task failed:', statusData.error);
+              throw new Error(statusData.error || 'Task failed');
+            }
+            // If still processing, continue polling...
+          } else {
+            console.log('⚠️ DEBUG: Status check failed, continuing polling...');
+          }
+        } catch (pollError) {
+          console.log('⚠️ DEBUG: Polling error, continuing...:', pollError.message);
+          // Continue polling on temporary errors
+        }
+      }
+      
+      // If we reach here, polling timed out
+      throw new Error('Meal planning timed out after 30 minutes');
+    } else {
+      // Immediate response (old behavior)
+      console.log('📄 DEBUG: Received immediate response');
+      return result;
+    }
+    
+  } catch (error) {
+    console.log('💥 DEBUG: Flask API call failed:', error.message);
+    throw error;
+  }
+};
+
+// Background processing for Flask API with status tracking
+const processFlaskInBackground = async (flaskData, userId, requestId) => {
+  try {
+    console.log('🔄 Starting background Flask processing for request:', requestId);
+    
+    // Update status to show processing started
+    global.mealPlanResults[requestId].message = 'Processing your meal request...';
+
+    // Process through queue to prevent overload
+    const flaskResponse = await addToQueue(flaskData);
+    
+    console.log('✅ Background Flask processing completed for request:', requestId);
+    console.log('📊 Response summary:', {
+      hasMealPlan: !!flaskResponse.meal_plan,
+      hasMacroSummary: !!flaskResponse.macro_summary,
+      success: flaskResponse.success
+    });
+
+    // Store the completed result
+    global.mealPlanResults[requestId] = {
+      userId: userId,
+      status: 'completed',
+      result: flaskResponse,
+      message: 'Meal plan generated successfully!',
+      createdAt: global.mealPlanResults[requestId].createdAt,
+      completedAt: new Date(),
+      userInput: global.mealPlanResults[requestId].userInput
+    };
+
+    console.log('💾 Meal plan result stored for request:', requestId);
+    
+  } catch (error) {
+    console.log('💥 Background Flask processing failed for request:', requestId, error.message);
+    
+    // Store error result
+    global.mealPlanResults[requestId] = {
+      userId: userId,
+      status: 'failed',
+      result: { error: error.message },
+      message: 'Failed to generate meal plan',
+      createdAt: global.mealPlanResults[requestId].createdAt,
+      completedAt: new Date(),
+      userInput: global.mealPlanResults[requestId].userInput
+    };
+  }
+};
+
+// ⚠️ ADD THIS REQUEST QUEUE SYSTEM
+let isProcessing = false;
+const requestQueue = [];
+
+const processQueue = async () => {
+  if (isProcessing || requestQueue.length === 0) {
+    return;
+  }
+
+  isProcessing = true;
+  const { data, resolve, reject } = requestQueue.shift();
+
+  try {
+    console.log('🔄 Processing request from queue...');
+    const result = await callFlaskAPI(data);
+    resolve(result);
+  } catch (error) {
+    reject(error);
+  } finally {
+    isProcessing = false;
+    processQueue(); // Process next request
+  }
+};
+
+const addToQueue = (data) => {
+  return new Promise((resolve, reject) => {
+    requestQueue.push({ data, resolve, reject });
+    processQueue();
+  });
+};
+// ⚠️ END OF QUEUE SYSTEM
+
+// Helper function to map goal values to Flask API expected format
+const mapGoalToFlaskFormat = (goal) => {
+  const goalMap = {
+    'lose_weight': 'weight loss',    // ✅ Database → Flask
+    'gain_muscle': 'muscle gain',    // ✅ Database → Flask
+    'maintain': 'maintain weight'    // ✅ Database → Flask
+  };
+  return goalMap[goal] || 'maintain weight';
+};
+
 // @desc    Generate daily meal plan
 // @route   POST /api/planner/daily
 // @access  Private
@@ -608,6 +790,179 @@ const getPlanDescription = (index) => {
   return descriptions[index] || 'Customized meal plan based on your preferences';
 };
 
+// @desc    Generate meal plan using Flask AI service with async processing
+// @route   POST /api/planner/flask-daily
+// @access  Private
+const generateFlaskDailyPlan = async (req, res) => {
+  console.log('🟢 generateFlaskDailyPlan function called');
+  console.log('📨 Request body:', req.body);
+  
+  try {
+    const { user_input, user_profile } = req.body;
+    const userId = req.userId;
+
+    console.log('🔍 Received request for Flask daily plan:', { user_input, user_profile });
+
+    if (!user_input) {
+      return res.status(400).json({
+        success: false,
+        message: 'User input is required'
+      });
+    }
+
+    // Get user data from database
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Prepare data for Flask API with user's actual data
+    const flaskData = {
+      user_input: user_input,
+      user_profile: {
+        goals: user_profile?.goals || user.onboarding?.basicInfo?.goal || 'maintain weight',
+        avoid_categories: user_profile?.avoid_categories || user.onboarding?.preferences?.dislikedFoods || [],
+        target_calories: user_profile?.target_calories || user.onboarding?.healthMetrics?.dailyCalories || 2300,
+        bmi: user_profile?.bmi || user.onboarding?.healthMetrics?.bmi || 22.5,
+        bmr: user_profile?.bmr || user.onboarding?.healthMetrics?.bmr || 1600,
+        tdee: user_profile?.tdee || user.onboarding?.healthMetrics?.tdee || 2300,
+        target_protein_g: user.onboarding?.healthMetrics?.proteinTarget || 0,
+        target_fat_g: user.onboarding?.healthMetrics?.fatsTarget || 0,
+        target_carbs_g: user.onboarding?.healthMetrics?.carbsTarget || 0
+      }
+    };
+
+    console.log('🔍 DEBUG - Complete user data sent to Flask:');
+    console.log('  - Goals:', flaskData.user_profile.goals);
+    console.log('  - Target Calories:', flaskData.user_profile.target_calories);
+    console.log('  - BMI:', flaskData.user_profile.bmi);
+    console.log('  - BMR:', flaskData.user_profile.bmr);
+    console.log('  - TDEE:', flaskData.user_profile.tdee);
+    console.log('  - Protein Target:', flaskData.user_profile.target_protein_g);
+    console.log('  - Fat Target:', flaskData.user_profile.target_fat_g);
+    console.log('  - Carbs Target:', flaskData.user_profile.target_carbs_g);
+    console.log('  - Avoid Categories:', flaskData.user_profile.avoid_categories);
+
+    // Generate unique request ID
+    const requestId = `mealplan_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    // Store initial request
+    global.mealPlanResults[requestId] = {
+      userId: userId,
+      status: 'processing',
+      result: null,
+      message: 'Meal plan is being generated...',
+      createdAt: new Date(),
+      completedAt: null,
+      userInput: user_input
+    };
+
+    console.log('🚀 Starting async processing with request ID:', requestId);
+
+    // Send immediate response with request ID
+    res.json({
+      success: true,
+      message: 'Meal plan request received and processing started',
+      data: {
+        status: 'processing',
+        requestId: requestId,
+        message: 'Your meal plan is being generated. This may take 15-20 minutes.',
+        user_input: user_input,
+        timestamp: new Date().toISOString(),
+        checkStatusUrl: `/api/planner/meal-plan-status/${requestId}`
+      }
+    });
+
+    // ⚠️ ADD THIS: Start background processing but don't await it
+    setImmediate(() => {
+      processFlaskInBackground(flaskData, userId, requestId).catch(error => {
+        console.error('❌ Background processing failed:', error);
+        // Update status to failed
+        if (global.mealPlanResults[requestId]) {
+          global.mealPlanResults[requestId].status = 'failed';
+          global.mealPlanResults[requestId].message = 'Failed to generate meal plan';
+          global.mealPlanResults[requestId].completedAt = new Date();
+        }
+      });
+    });
+
+    return; 
+
+    // Process in background and store result
+    processFlaskInBackground(flaskData, userId, requestId);
+
+  } catch (error) {
+    console.error('❌ Flask AI planner error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error generating meal plan',
+      error: error.message
+    });
+  }
+};
+
+
+
+// @desc    Get meal plan status and results
+// @route   GET /api/planner/meal-plan-status/:requestId
+// @access  Private
+const getMealPlanStatus = async (req, res) => {
+  try {
+    const { requestId } = req.params;
+    const userId = req.userId;
+
+    console.log('🔍 Checking meal plan status for:', requestId);
+    console.log('👤 Current user ID:', userId, 'Type:', typeof userId);
+
+    const mealPlanResult = global.mealPlanResults?.[requestId];
+    
+    if (!mealPlanResult) {
+      return res.status(404).json({
+        success: false,
+        message: 'Meal plan request not found'
+      });
+    }
+
+    console.log('📋 Stored user ID:', mealPlanResult.userId, 'Type:', typeof mealPlanResult.userId);
+    console.log('🔐 User ID comparison:', {
+      stored: mealPlanResult.userId.toString(),
+      current: userId.toString(),
+      match: mealPlanResult.userId.toString() === userId.toString()
+    });
+
+    // Check if user owns this request
+    if (mealPlanResult.userId.toString() !== userId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        requestId,
+        status: mealPlanResult.status,
+        result: mealPlanResult.result,
+        createdAt: mealPlanResult.createdAt,
+        completedAt: mealPlanResult.completedAt,
+        message: mealPlanResult.message
+      }
+    });
+
+  } catch (error) {
+    console.error('Get meal plan status error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error checking meal plan status',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   generateDailyPlan,
   generateMultiplePlans,
@@ -615,5 +970,7 @@ module.exports = {
   getMealSuggestions,
   singleMealPlanner,
   multiMealPlanner,
-  smartMealPlanner
+  smartMealPlanner,
+  generateFlaskDailyPlan,
+  getMealPlanStatus 
 };

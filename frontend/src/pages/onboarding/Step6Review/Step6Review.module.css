@@ -181,51 +181,52 @@
   word-wrap: break-word;
 }
 
-/* Health Metrics */
+/* Health Metrics - Updated for 7 cards */
 .metricsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: var(--spacing-md);
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Smaller min-width */
+  gap: var(--spacing-sm); /* Smaller gap */
 }
 
 .metricCard {
   background-color: var(--white);
   border: 2px solid var(--gray-medium);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md); 
   text-align: center;
   transition: all var(--transition-fast);
-}
-
-.metricCard:hover {
-  border-color: var(--primary-green);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-medium);
+  min-height: 100px; /* Fixed height for consistency */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .metricValue {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl); /* Slightly smaller */
   font-weight: 700;
   color: var(--primary-green);
   margin-bottom: var(--spacing-xs);
+  line-height: 1.2;
 }
 
 .metricLabel {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm); /* Smaller font */
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: var(--spacing-xs);
 }
 
 .metricDescription {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-xs); /* Smaller font */
   color: var(--text-secondary);
+  line-height: 1.2;
 }
 
 .metricCategory {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs); /* Smaller font */
   font-weight: 600;
   margin-top: var(--spacing-xs);
+  line-height: 1.2;
 }
 
 /* Error Sections */
@@ -441,6 +442,11 @@
     transform: translateY(0);
   }
 }
+
+
+
+
+
 
 
 

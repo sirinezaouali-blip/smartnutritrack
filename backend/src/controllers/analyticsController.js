@@ -35,25 +35,37 @@ const getDailyAnalytics = async (req, res) => {
       totals.calories += meal.calories;
       totals.protein += meal.protein;
       totals.carbs += meal.carbs;
-      totals.fat += meal.fat;
+      totals.fats += meal.fats;
       return totals;
-    }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
+    }, { calories: 0, protein: 0, carbs: 0, fats: 0 });
 
-    // Get user targets
+    // Get user targetsdailyCalories: healthMetrics.dailyCalories || 2000,
+        // Get user targets - NO STATIC DATA
     const user = await User.findById(userId);
-    const targets = user.onboarding.healthMetrics || {
-      dailyCalories: 2000,
-      proteinTarget: 150,
-      carbsTarget: 250,
-      fatsTarget: 67
+    console.log('🔍 FULL USER DATA:', JSON.stringify(user.onboarding, null, 2));
+
+    const healthMetrics = user.onboarding.healthMetrics || {};
+
+    console.log('🔍 HEALTH METRICS:', JSON.stringify(healthMetrics, null, 2));
+
+    console.log('🔍 USER HEALTH METRICS:', healthMetrics);
+    console.log('🔍 FAT TARGET VALUE:', healthMetrics.fatsTarget);
+    
+    const targets = {
+      dailyCalories: healthMetrics.dailyCalories,
+      proteinTarget: healthMetrics.proteinTarget,
+      carbsTarget: healthMetrics.carbsTarget,
+      fatsTarget: healthMetrics.fatsTarget
     };
+
+    console.log('🔍 TARGETS BEING SENT:', JSON.stringify(targets, null, 2));
 
     // Calculate percentages
     const percentages = {
       calories: Math.round((dailyTotals.calories / targets.dailyCalories) * 100),
       protein: Math.round((dailyTotals.protein / targets.proteinTarget) * 100),
       carbs: Math.round((dailyTotals.carbs / targets.carbsTarget) * 100),
-      fat: Math.round((dailyTotals.fat / targets.fatsTarget) * 100)
+      fats: Math.round((dailyTotals.fats / targets.fatsTarget) * 100)
     };
 
     // Group by meal type
@@ -65,22 +77,27 @@ const getDailyAnalytics = async (req, res) => {
       return acc;
     }, {});
 
-    res.json({
-      success: true,
-      data: {
-        date: startOfDay.toISOString().split('T')[0],
-        totals: dailyTotals,
-        targets: {
-          calories: targets.dailyCalories,
-          protein: targets.proteinTarget,
-          carbs: targets.carbsTarget,
-          fat: targets.fatsTarget
-        },
-        percentages,
-        mealsByType,
-        mealCount: userMeals.length
-      }
-    });
+        res.json({
+          success: true,
+          data: {
+            date: startOfDay.toISOString().split('T')[0],
+            totals: {
+              calories: dailyTotals.calories,
+              protein: dailyTotals.protein,
+              carbs: dailyTotals.carbs,
+              fats: dailyTotals.fats  
+            },
+            targets: {
+              calories: targets.dailyCalories,
+              protein: targets.proteinTarget,
+              carbs: targets.carbsTarget,
+              fats: targets.fatsTarget || Math.round((0.25 * targets.dailyCalories) / 9)
+            },
+            percentages,
+            mealsByType,
+            mealCount: userMeals.length
+          }
+        });
   } catch (error) {
     console.error('Get daily analytics error:', error);
     res.status(500).json({
@@ -139,7 +156,7 @@ const getWeeklyAnalytics = async (req, res) => {
         calories: 0,
         protein: 0,
         carbs: 0,
-        fat: 0,
+        fats: 0,
         target: dailyTarget
       };
     }
@@ -151,7 +168,7 @@ const getWeeklyAnalytics = async (req, res) => {
         dailyData[dateKey].calories += meal.calories;
         dailyData[dateKey].protein += meal.protein;
         dailyData[dateKey].carbs += meal.carbs;
-        dailyData[dateKey].fat += meal.fat;
+        dailyData[dateKey].fats += meal.fats;
       }
     });
 
@@ -161,15 +178,15 @@ const getWeeklyAnalytics = async (req, res) => {
       totals.calories += day.calories;
       totals.protein += day.protein;
       totals.carbs += day.carbs;
-      totals.fat += day.fat;
+      totals.fats += day.fats;
       return totals;
-    }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
+    }, { calories: 0, protein: 0, carbs: 0, fats: 0 });
 
     const weeklyAverage = {
       calories: Math.round(weeklyTotals.calories / 7),
       protein: Math.round(weeklyTotals.protein / 7),
       carbs: Math.round(weeklyTotals.carbs / 7),
-      fat: Math.round(weeklyTotals.fat / 7)
+      fats: Math.round(weeklyTotals.fats / 7)
     };
 
     res.json({
@@ -239,9 +256,9 @@ const getMonthlyAnalytics = async (req, res) => {
         totals.calories += meal.calories;
         totals.protein += meal.protein;
         totals.carbs += meal.carbs;
-        totals.fat += meal.fat;
+        totals.fats += meal.fats;
         return totals;
-      }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
+      }, { calories: 0, protein: 0, carbs: 0, fats: 0 });
 
       monthlyData.push({
         date: dateKey,
@@ -256,15 +273,15 @@ const getMonthlyAnalytics = async (req, res) => {
       totals.calories += day.calories;
       totals.protein += day.protein;
       totals.carbs += day.carbs;
-      totals.fat += day.fat;
+      totals.fats += day.fats;
       return totals;
-    }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
+    }, { calories: 0, protein: 0, carbs: 0, fats: 0 });
 
     const monthlyAverage = {
       calories: Math.round(monthlyTotals.calories / daysInMonth),
       protein: Math.round(monthlyTotals.protein / daysInMonth),
       carbs: Math.round(monthlyTotals.carbs / daysInMonth),
-      fat: Math.round(monthlyTotals.fat / daysInMonth)
+      fats: Math.round(monthlyTotals.fats / daysInMonth)
     };
 
     // Most consumed meals
@@ -337,17 +354,17 @@ const getMacroDistribution = async (req, res) => {
       acc.calories += meal.calories;
       acc.protein += meal.protein;
       acc.carbs += meal.carbs;
-      acc.fat += meal.fat;
+      acc.fats += meal.fats;
       return acc;
-    }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
+    }, { calories: 0, protein: 0, carbs: 0, fats: 0 });
 
     // Calculate percentage distribution
-    const totalMacroCalories = (totals.protein * 4) + (totals.carbs * 4) + (totals.fat * 9);
+    const totalMacroCalories = (totals.protein * 4) + (totals.carbs * 4) + (totals.fats * 9);
     
     const distribution = {
       protein: Math.round((totals.protein * 4) / totalMacroCalories * 100),
       carbs: Math.round((totals.carbs * 4) / totalMacroCalories * 100),
-      fat: Math.round((totals.fat * 9) / totalMacroCalories * 100)
+      fats: Math.round((totals.fats * 9) / totalMacroCalories * 100)
     };
 
     res.json({
@@ -370,9 +387,192 @@ const getMacroDistribution = async (req, res) => {
   }
 };
 
+// @desc    Get detailed analytics with all metrics
+// @route   GET /api/analytics/detailed
+// @access  Private
+const getDetailedAnalytics = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { timeframe = 'week' } = req.query;
+
+    // Get user data
+    const user = await User.findById(userId);
+    const healthMetrics = user.onboarding.healthMetrics || {};
+    
+    const targets = {
+      calories: healthMetrics.dailyCalories || 2000,
+      protein: healthMetrics.proteinTarget || 150,
+      carbs: healthMetrics.carbsTarget || 250,
+      fats: healthMetrics.fatsTarget || 67
+    };
+
+    // Calculate date range based on timeframe
+    let startDate, endDate;
+    const now = new Date();
+    
+    if (timeframe === 'today') {
+      startDate = new Date(now.setHours(0, 0, 0, 0));
+      endDate = new Date(now.setHours(23, 59, 59, 999));
+    } else if (timeframe === 'week') {
+      startDate = new Date(now.setDate(now.getDate() - 7));
+      startDate.setHours(0, 0, 0, 0);
+      endDate = new Date();
+    } else if (timeframe === 'month') {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      endDate = new Date();
+    }
+
+    // Get meals for the period
+    const meals = await UserMeal.find({
+      userId,
+      date: { $gte: startDate, $lte: endDate },
+      consumed: true
+    }).populate('mealId');
+
+    // Calculate totals
+    const totals = meals.reduce((acc, meal) => {
+      acc.calories += meal.calories;
+      acc.protein += meal.protein;
+      acc.carbs += meal.carbs;
+      acc.fats += meal.fats;
+      return acc;
+    }, { calories: 0, protein: 0, carbs: 0, fats: 0 });
+
+    // Calculate averages based on timeframe
+    let daysInPeriod = 1;
+    if (timeframe === 'week') daysInPeriod = 7;
+    if (timeframe === 'month') daysInPeriod = 30;
+
+    const averages = {
+      calories: Math.round(totals.calories / daysInPeriod),
+      protein: Math.round(totals.protein / daysInPeriod),
+      carbs: Math.round(totals.carbs / daysInPeriod),
+      fats: Math.round(totals.fats / daysInPeriod)
+    };
+
+    // Calculate percentages
+    const percentages = {
+      calories: Math.round((totals.calories / (targets.calories * daysInPeriod)) * 100),
+      protein: Math.round((totals.protein / (targets.protein * daysInPeriod)) * 100),
+      carbs: Math.round((totals.carbs / (targets.carbs * daysInPeriod)) * 100),
+      fats: Math.round((totals.fats / (targets.fats * daysInPeriod)) * 100)
+    };
+
+    // Macronutrient distribution
+    const totalMacroCalories = (totals.protein * 4) + (totals.carbs * 4) + (totals.fats * 9);
+    const macroDistribution = {
+      protein: Math.round((totals.protein * 4) / totalMacroCalories * 100),
+      carbs: Math.round((totals.carbs * 4) / totalMacroCalories * 100),
+      fats: Math.round((totals.fats * 9) / totalMacroCalories * 100)
+    };
+
+    // Meal type distribution
+    const mealTypeDistribution = meals.reduce((acc, meal) => {
+      const type = meal.mealType || 'other';
+      if (!acc[type]) {
+        acc[type] = { calories: 0, count: 0 };
+      }
+      acc[type].calories += meal.calories;
+      acc[type].count += 1;
+      return acc;
+    }, {});
+
+    res.json({
+      success: true,
+      data: {
+        timeframe,
+        totals,
+        averages,
+        targets,
+        percentages,
+        macroDistribution,
+        mealTypeDistribution,
+        mealCount: meals.length,
+        period: {
+          start: startDate.toISOString().split('T')[0],
+          end: endDate.toISOString().split('T')[0]
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Get detailed analytics error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get macronutrient details
+// @route   GET /api/analytics/macronutrient-details
+// @access  Private
+const getMacronutrientDetails = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { timeframe = 'week' } = req.query;
+
+    // Similar date range calculation as above
+    let startDate, endDate;
+    const now = new Date();
+    
+    if (timeframe === 'week') {
+      startDate = new Date(now.setDate(now.getDate() - 7));
+      startDate.setHours(0, 0, 0, 0);
+      endDate = new Date();
+    } else if (timeframe === 'month') {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      endDate = new Date();
+    }
+
+    const meals = await UserMeal.find({
+      userId,
+      date: { $gte: startDate, $lte: endDate },
+      consumed: true
+    });
+
+    // Calculate daily macronutrient breakdown
+    const dailyMacros = {};
+    meals.forEach(meal => {
+      const date = meal.date.toISOString().split('T')[0];
+      if (!dailyMacros[date]) {
+        dailyMacros[date] = { protein: 0, carbs: 0, fats: 0, calories: 0 };
+      }
+      dailyMacros[date].protein += meal.protein;
+      dailyMacros[date].carbs += meal.carbs;
+      dailyMacros[date].fats += meal.fats;
+      dailyMacros[date].calories += meal.calories;
+    });
+
+    // Convert to array for chart data
+    const dailyMacroData = Object.entries(dailyMacros).map(([date, macros]) => ({
+      date,
+      ...macros
+    }));
+
+    res.json({
+      success: true,
+      data: {
+        dailyMacroData,
+        timeframe
+      }
+    });
+  } catch (error) {
+    console.error('Get macronutrient details error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// Add these to your exports
 module.exports = {
   getDailyAnalytics,
   getWeeklyAnalytics,
   getMonthlyAnalytics,
-  getMacroDistribution
+  getMacroDistribution,
+  getDetailedAnalytics,
+  getMacronutrientDetails
 };

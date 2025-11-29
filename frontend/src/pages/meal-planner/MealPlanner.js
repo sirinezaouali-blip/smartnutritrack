@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { fetchMealPlans } from '../../services/mealService';
-import { FiCalendar, FiPlus, FiTarget, FiClock, FiUsers, FiUser } from 'react-icons/fi';
+import { fetchAnalyticsData } from '../../services/analyticsService'; // ADD THIS IMPORT
+import { FiCalendar, FiPlus, FiTarget, FiClock, FiUsers, FiUser, FiAlertTriangle } from 'react-icons/fi';
 import LoadingSpinner from '../../components/common/LoadingSpinner/LoadingSpinner';
 import styles from './MealPlanner.module.css';
 
@@ -14,56 +15,101 @@ const MealPlanner = () => {
   const [mealPlans, setMealPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // NEW: Emergency mode detection
+  const [emergencyMode, setEmergencyMode] = useState(false);
+  const [remainingCalories, setRemainingCalories] = useState(0);
+  const [todayStats, setTodayStats] = useState(null);
 
   useEffect(() => {
-    const loadMealPlans = async () => {
+    const loadData = async () => {
       setLoading(true);
       setError(null);
       
       try {
-        const response = await fetchMealPlans();
-        if (response.success) {
-          setMealPlans(response.data);
+        // Load meal plans and analytics in parallel
+        const [plansResponse, analyticsResponse] = await Promise.all([
+          fetchMealPlans(),
+          fetchAnalyticsData('today') // NEW: Load today's stats
+        ]);
+
+        if (plansResponse.success) {
+          setMealPlans(plansResponse.data);
         } else {
           setError('Failed to load meal plans');
         }
+
+        // NEW: Check for emergency mode
+        if (analyticsResponse.success) {
+          const analyticsData = analyticsResponse.data || {};
+          const todayStatsData = {
+            caloriesConsumed: analyticsData.caloriesConsumed || 0,
+            caloriesTarget: analyticsData.caloriesTarget
+          };
+
+          setTodayStats(todayStatsData);
+          
+          // Calculate remaining calories
+          const dailyTarget = todayStatsData.caloriesTarget || 2000;
+          const caloriesConsumed = todayStatsData.caloriesConsumed || 0;
+          const remaining = dailyTarget - caloriesConsumed;
+          
+          setRemainingCalories(remaining);
+          
+          // Auto-activate emergency mode based on remaining calories
+          const shouldActivateEmergency = remaining < 500;
+          setEmergencyMode(shouldActivateEmergency);
+        }
       } catch (error) {
-        console.error('Meal plans loading error:', error);
-        setError('Failed to load meal plans');
+        console.error('Data loading error:', error);
+        setError('Failed to load data');
       } finally {
         setLoading(false);
       }
     };
 
-    loadMealPlans();
+    loadData();
   }, []);
 
   const plannerTypes = [
     {
       title: 'Single Meal',
-      description: 'Plan one meal at a time',
+      description: 'Single meal type planner',
       icon: <FiUser />,
       link: '/meal-planner/single',
       color: 'primary',
-      features: ['Quick planning', 'One meal focus', 'Simple interface']
+      features: ['Quick planning', 'One meal focus', 'Simple interface'],
+      disabledInEmergency: true // NEW: This card gets disabled in emergency mode
     },
     {
-      title: 'Daily Planner',
-      description: 'Plan your entire day',
+      title: 'Multiple Meal Planner',
+      description: 'Plan your entire day', 
       icon: <FiCalendar />,
       link: '/meal-planner/daily',
       color: 'secondary',
-      features: ['Full day planning', 'Meal balance', 'Nutrition overview']
+      features: ['Full day planning', 'Meal balance', 'Nutrition overview'],
+      disabledInEmergency: true // NEW: This card gets disabled in emergency mode
     },
     {
-      title: 'Multiple Days',
+      title: 'Low carb, high protein meals',
       description: 'Plan for several days',
       icon: <FiTarget />,
       link: '/meal-planner/multiple',
-      color: 'tertiary',
-      features: ['Weekly planning', 'Batch preparation', 'Advanced features']
+      color: 'tertiary', 
+      features: ['Weekly planning', 'Batch preparation', 'Advanced features'],
+      disabledInEmergency: false // NEW: This card stays active in emergency mode
     }
   ];
+
+  // NEW: Check if a card should be disabled
+  const isCardDisabled = (plannerType) => {
+    return emergencyMode && plannerType.disabledInEmergency;
+  };
+
+  // NEW: Get disabled message for cards
+  const getDisabledMessage = () => {
+    return `Only ${remainingCalories} calories remaining. Use Low Carb mode for optimal options.`;
+  };
 
   const getUpcomingMeals = () => {
     const today = new Date();
@@ -142,36 +188,78 @@ const MealPlanner = () => {
         </div>
       </div>
 
+      {/* NEW: Emergency Mode Banner */}
+      {emergencyMode && todayStats && (
+        <div className={styles.emergencyBanner}>
+          <FiAlertTriangle />
+          <div className={styles.emergencyContent}>
+            <h3>Low Calorie Mode Detected</h3>
+            <p>
+              You have only <strong>{remainingCalories} calories</strong> remaining today. 
+              Some planning options have been disabled for optimal results.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Planner Types */}
       <div className={styles.plannerTypesSection}>
         <h2 className={styles.sectionTitle}>Choose Your Planning Style</h2>
         <div className={styles.plannerTypesGrid}>
-          {plannerTypes.map((type, index) => (
-            <Link key={index} to={type.link} className={styles.plannerTypeCard}>
-              <div className={`${styles.typeIcon} ${styles[`color${type.color.charAt(0).toUpperCase() + type.color.slice(1)}`]}`}>
-                {type.icon}
-              </div>
-              
-              <div className={styles.typeContent}>
-                <h3 className={styles.typeTitle}>{type.title}</h3>
-                <p className={styles.typeDescription}>{type.description}</p>
+          {plannerTypes.map((type, index) => {
+            const isDisabled = isCardDisabled(type);
+            
+            return (
+              <div 
+                key={index} 
+                className={`${styles.plannerTypeCard} ${isDisabled ? styles.inactive : ''}`}
+              >
+                {isDisabled && (
+                  <div className={styles.tooltip}>
+                    <div className={styles.disabledOverlay}>
+                      <FiAlertTriangle />
+                      <span>Limited Options</span>
+                    </div>
+                    <div className={styles.tooltiptext}>
+                      {getDisabledMessage()}
+                    </div>
+                  </div>
+                )}
                 
-                <ul className={styles.typeFeatures}>
-                  {type.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className={styles.typeFeature}>
-                      <span className={styles.featureBullet}>•</span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+                <div className={`${styles.typeIcon} ${styles[`color${type.color.charAt(0).toUpperCase() + type.color.slice(1)}`]}`}>
+                  {type.icon}
+                </div>
+                
+                <div className={styles.typeContent}>
+                  <h3 className={styles.typeTitle}>{type.title}</h3>
+                  <p className={styles.typeDescription}>{type.description}</p>
+                  
+                  <ul className={styles.typeFeatures}>
+                    {type.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className={styles.typeFeature}>
+                        <span className={styles.featureBullet}>•</span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div className={styles.typeAction}>
+                  {isDisabled ? (
+                    <div className={styles.disabledAction}>
+                      <span className={styles.disabledText}>Limited Access</span>
+                      <div className={styles.lockIcon}>🔒</div>
+                    </div>
+                  ) : (
+                    <Link to={type.link} className={styles.cardLink}>
+                      <span className={styles.actionText}>Start Planning</span>
+                      <div className={styles.actionArrow}>→</div>
+                    </Link>
+                  )}
+                </div>
               </div>
-              
-              <div className={styles.typeAction}>
-                <span className={styles.actionText}>Start Planning</span>
-                <div className={styles.actionArrow}>→</div>
-              </div>
-            </Link>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -299,7 +387,6 @@ const MealPlanner = () => {
 };
 
 export default MealPlanner;
-
 
 
 

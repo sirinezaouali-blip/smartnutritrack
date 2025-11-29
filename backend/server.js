@@ -6,7 +6,15 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
-app.use(cors());
+// CORS Configuration
+app.use(cors({
+  origin: 'http://localhost:3000', // Your React frontend
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
+// Handle preflight requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -29,6 +37,8 @@ app.use('/api/orders', require('./src/routes/orderRoutes'));
 app.use('/api/social', require('./src/routes/socialRoutes'));
 app.use('/api/scan', require('./src/routes/scanRoutes'));
 app.use('/api/ai', require('./src/routes/aiRoutes'));
+app.use('/api/recovery', require('./src/routes/recoveryRoutes'));
+app.use('/api/search', require('./src/routes/searchRoutes'));
 
 // Basic route
 app.get('/', (req, res) => {

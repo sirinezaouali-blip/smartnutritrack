@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../../contexts/UserContext';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { analyzeDishImage } from '../../../services/aiService';
+import { scanImageFromFile, recognizeDishFromFile } from '../../../services/scanService';
 import { FiCamera, FiImage, FiRefreshCw, FiCheck, FiX, FiPlus } from 'react-icons/fi';
 import LoadingSpinner from '../../../components/common/LoadingSpinner/LoadingSpinner';
 import CameraCapture from '../../../components/common/CameraCapture/CameraCapture';
@@ -11,6 +11,7 @@ import styles from './DishScan.module.css';
 const DishScan = () => {
   const { userProfile } = useUser();
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -19,6 +20,24 @@ const DishScan = () => {
   const [error, setError] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
+
+  // Add this function RIGHT HERE
+  const extractNutritionValue = (nutrientValue) => {
+    if (!nutrientValue && nutrientValue !== 0) return 0;
+    
+    // If it's already a number, return it directly
+    if (typeof nutrientValue === 'number') {
+      return nutrientValue;
+    }
+    
+    // If it's a string, extract the numeric value
+    if (typeof nutrientValue === 'string') {
+      const match = nutrientValue.match(/(\d+(?:\.\d+)?)/);
+      return match ? parseFloat(match[1]) : 0;
+    }
+    
+    return 0;
+  };
 
   const fileInputRef = useRef(null);
 
@@ -62,16 +81,39 @@ const DishScan = () => {
     setError(null);
 
     try {
-      const formData = new FormData();
-      formData.append('image', selectedImage);
-      formData.append('userId', userProfile?.id || 'anonymous');
+      // Use the new scan service to analyze the dish
+      const response = await recognizeDishFromFile(selectedImage);
 
-      const response = await analyzeDishImage(formData);
+      console.log('🔍 Full Dish API Response:', response); // Debug log
 
       if (response.success) {
-        setAnalysisResult(response.data);
+        // Get the actual prediction data from the nested structure
+        const topPrediction = response.data.prediction.predictions[0];
+        const nutritionData = response.data.nutrition?.nutrients || {};
+
+        console.log('🎯 Top Prediction:', topPrediction);
+        console.log('📊 Nutrition Data:', nutritionData);
+
+        // Transform the API response to match your frontend format
+        const transformedResult = {
+          dishName: topPrediction.food_name,
+          confidence: topPrediction.confidence,
+          category: topPrediction.category,
+          cuisine: 'Various',
+          nutrition: {
+            calories: extractNutritionValue(nutritionData.calories),
+            protein: extractNutritionValue(nutritionData.protein), 
+            carbs: extractNutritionValue(nutritionData.carbs),
+            fats: extractNutritionValue(nutritionData.fats)
+          },
+          ingredients: [],
+          allergens: []
+        };
+
+        console.log('🔄 Transformed Result:', transformedResult); // Debug log
+        setAnalysisResult(transformedResult);
       } else {
-        setError('Failed to analyze the dish image');
+        setError(response.message || 'Failed to analyze the dish image');
       }
     } catch (error) {
       console.error('Dish analysis error:', error);
@@ -99,17 +141,26 @@ const DishScan = () => {
       calories: analysisResult.nutrition.calories,
       protein: analysisResult.nutrition.protein,
       carbs: analysisResult.nutrition.carbs,
-      fat: analysisResult.nutrition.fat,
+      fats: analysisResult.nutrition.fats,
       mealType: 'lunch', // Default, user can change
       image: imagePreview,
-      source: 'dish_scan'
+      source: 'dish_scan',
+      confidence: analysisResult.confidence
     };
 
     console.log('Adding meal to diary:', mealData);
-    alert('Meal added to your daily intake successfully!');
-
-    // Reset for next scan
-    resetScan();
+    console.log('🔍 DEBUG - Fat value before passing to AddMeal:', analysisResult.nutrition.fats);
+    console.log('📊 Full nutrition data:', analysisResult.nutrition);
+    console.log('🎯 Full meal data being passed:', mealData);
+    
+    // Navigate to add meal page with the scanned data
+    navigate('/add-meal', { 
+      state: { 
+        scannedMeal: mealData,
+        imagePreview: imagePreview,
+        fromScan: true
+      } 
+    });
   };
 
   return (
@@ -270,9 +321,9 @@ const DishScan = () => {
 
                 <div className={styles.nutritionItem}>
                   <div className={styles.nutritionValue}>
-                    {analysisResult.nutrition.fat}
+                    {analysisResult.nutrition.fats}
                   </div>
-                  <div className={styles.nutritionLabel}>Fat</div>
+                  <div className={styles.nutritionLabel}>Fats</div>
                   <div className={styles.nutritionUnit}>g</div>
                 </div>
               </div>
@@ -284,9 +335,6 @@ const DishScan = () => {
                     {analysisResult.ingredients.map((ingredient, index) => (
                       <span key={index} className={styles.ingredient}>
                         {ingredient.name}
-                        {ingredient.confidence && (
-                          <small>({Math.round(ingredient.confidence * 100)}%)</small>
-                        )}
                       </span>
                     ))}
                   </div>

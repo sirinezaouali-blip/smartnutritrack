@@ -1,4 +1,5 @@
 const Meal = require('../models/Meal');
+const aiService = require('../utils/aiService');
 
 // @desc    Scan food barcode
 // @route   POST /api/scan/barcode
@@ -67,7 +68,16 @@ const scanBarcode = async (req, res) => {
 // @desc    Scan food image (Dish or Fruits/Vegetables)
 // @route   POST /api/scan/image
 // @access  Private
+// @desc    Scan food image (Dish or Fruits/Vegetables)
+// @route   POST /api/scan/image
+// @access  Private
 const scanImage = async (req, res) => {
+  console.log('🚀 SCAN IMAGE ENDPOINT HIT!');
+  console.log('📦 Request body keys:', Object.keys(req.body));
+  console.log('📦 Request body received');
+  console.log('🖼️ Image base64 length:', req.body.imageBase64?.length);
+  console.log('🔍 Scan type:', req.body.scanType);
+
   try {
     const { imageBase64, scanType = 'dish' } = req.body; // 'dish' or 'fruits_vegetables'
     const userId = req.userId;
@@ -79,32 +89,59 @@ const scanImage = async (req, res) => {
       });
     }
 
-    // In a real implementation, this would call the CNN model
-    // For now, we'll simulate the CNN model response
-    const prediction = await simulateCNNModelPrediction(imageBase64, scanType);
+    // Convert base64 to buffer
+    const imageBuffer = Buffer.from(imageBase64, 'base64');
+    
+    // Call the actual AI service for food recognition
+    const aiResult = await aiService.scanFood(imageBuffer, 'food-scan.jpg');
 
-    if (!prediction) {
+    console.log('🔍 AI Service Response:', JSON.stringify(aiResult, null, 2));
+
+    if (!aiResult.success || !aiResult.prediction) {
       return res.status(400).json({
         success: false,
-        message: 'Could not identify food from image'
+        message: 'Could not identify food from image',
+        error: aiResult.error || 'AI service returned no prediction'
       });
     }
 
+    const prediction = aiResult.prediction;
+
+    // EXTRACT THE ACTUAL PREDICTION DATA FROM NESTED STRUCTURE
+    const topPrediction = prediction.top_prediction || {};
+    const foodName = topPrediction.food_name || 'Unknown';
+    const confidence = topPrediction.confidence || 0;
+    const category = topPrediction.category || 'general';
+
+    console.log('🎯 Extracted prediction:', { foodName, confidence, category });
+    
     // Search for matching meal in database
-    let meal = await Meal.findOne({
-      name: { $regex: prediction.foodName, $options: 'i' }
-    });
+    // Search for matching meal in database - WITH ERROR HANDLING
+    let meal = null;
+    try {
+      if (prediction.foodName && typeof prediction.foodName === 'string') {
+        meal = await Meal.findOne({
+          name: { $regex: prediction.foodName, $options: 'i' }
+        });
+        console.log('✅ Database search completed');
+      }
+    } catch (dbError) {
+      console.warn('⚠️ Database search failed, continuing without meal data:', dbError.message);
+      meal = null;
+    }
 
-    // If no exact match, find similar meals
-    if (!meal) {
-      const similarMeals = await Meal.find({
-        $or: [
-          { name: { $regex: prediction.foodName.split(' ')[0], $options: 'i' } },
-          { ingredients: { $in: [new RegExp(prediction.foodName, 'i')] } }
-        ]
-      }).limit(5);
+// Skip similar meals search to avoid more errors
 
-      meal = similarMeals[0]; // Take the first similar meal
+    // Get nutrition data from AI service
+    let nutritionData = null;
+    try {
+      console.log('🍎 Getting nutrition for:', foodName);
+      nutritionData = await aiService.getNutrition(foodName);
+      console.log('📊 Nutrition data:', nutritionData);
+      
+    } catch (nutritionError) {
+      console.warn('Nutrition data fetch failed:', nutritionError.message);
+      // Continue without nutrition data
     }
 
     res.json({
@@ -112,12 +149,13 @@ const scanImage = async (req, res) => {
       message: 'Image scanned successfully',
       data: {
         prediction: {
-          foodName: prediction.foodName,
-          confidence: prediction.confidence,
-          category: prediction.category
+          foodName: foodName,
+          confidence: confidence,
+          category: category,
         },
         meal: meal || null,
-        suggestions: meal ? null : await getFoodSuggestions(prediction.foodName)
+        nutrition: nutritionData,
+        suggestions: null
       }
     });
   } catch (error) {
@@ -145,23 +183,36 @@ const recognizeDish = async (req, res) => {
       });
     }
 
-    // This would integrate with a dish recognition AI model
-    // For now, we'll simulate the response
-    const dishRecognition = await simulateDishRecognition(imageBase64);
+    console.log('🍽️ DISH RECOGNITION - Converting base64 to buffer');
+    
+    // Convert base64 to buffer for AI service
+    const imageBuffer = Buffer.from(imageBase64, 'base64');
 
+    console.log('🔍 Calling AI service for dish recognition...');
+    console.log('🌐 AI Backend URL:', `${aiService.fastApiBaseUrl}/api/scan/dish`);
+    console.log('📊 Image buffer size:', imageBuffer.length, 'bytes');
+    
+    // Call the actual AI service that uses MobileNetV2
+    const aiResult = await aiService.recognizeDish(imageBuffer);
+
+    console.log('✅ AI Service Response:', JSON.stringify(aiResult, null, 2));
+
+    if (!aiResult.success) {
+      return res.status(400).json({
+        success: false,
+        message: 'Could not recognize dish from image',
+        error: aiResult.error || 'AI service failed'
+      });
+    }
+
+    // Return the actual AI prediction from MobileNetV2
     res.json({
       success: true,
       message: 'Dish recognized successfully',
-      data: {
-        dish: dishRecognition.dish,
-        confidence: dishRecognition.confidence,
-        ingredients: dishRecognition.ingredients,
-        estimatedCalories: dishRecognition.estimatedCalories,
-        similarMeals: await findSimilarMeals(dishRecognition.dish)
-      }
+      data: aiResult // Return the full AI result directly
     });
   } catch (error) {
-    console.error('Dish recognition error:', error);
+    console.error('❌ Dish recognition error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error recognizing dish',
@@ -276,6 +327,54 @@ const simulateDishRecognition = async (imageBase64) => {
   ];
 
   return dishes[Math.floor(Math.random() * dishes.length)];
+};
+
+// @desc    Scan fruits and vegetables using custom CNN model
+// @route   POST /api/scan/fruits-vegetables
+// @access  Private
+const scanFruitsVegetables = async (req, res) => {
+  console.log('🍎 FRUITS/VEGETABLES SCAN ENDPOINT HIT!');
+  
+  try {
+    const { imageBase64 } = req.body;
+    const userId = req.userId;
+
+    if (!imageBase64) {
+      return res.status(400).json({
+        success: false,
+        message: 'Image data is required'
+      });
+    }
+
+    // Convert base64 to buffer
+    const imageBuffer = Buffer.from(imageBase64, 'base64');
+    
+    // Call the AI service for fruits/vegetables recognition
+    const aiResult = await aiService.scanFruitsVegetables(imageBuffer, 'produce.jpg');
+
+    console.log('🔍 Fruits/Vegetables AI Response:', JSON.stringify(aiResult, null, 2));
+
+    if (!aiResult.success || !aiResult.prediction) {
+      return res.status(400).json({
+        success: false,
+        message: 'Could not identify produce from image',
+        error: aiResult.error || 'AI service returned no prediction'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Produce scanned successfully',
+      data: aiResult // Return the full AI result directly
+    });
+  } catch (error) {
+    console.error('Fruits/vegetables scan error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error scanning produce',
+      error: error.message
+    });
+  }
 };
 
 // Helper function to get food suggestions

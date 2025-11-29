@@ -351,3 +351,8 @@ export default ScanFood;
 
 
 
+
+
+
+
+

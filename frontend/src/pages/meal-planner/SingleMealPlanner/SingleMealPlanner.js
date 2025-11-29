@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../../contexts/UserContext';
-
+import { fetchAnalyticsData } from '../../../services/analyticsService';
 import { FiTarget, FiClock, FiCheck, FiRefreshCw, FiShoppingCart } from 'react-icons/fi';
 import LoadingSpinner from '../../../components/common/LoadingSpinner/LoadingSpinner';
 import styles from './SingleMealPlanner.module.css';
@@ -15,17 +15,69 @@ const SingleMealPlanner = () => {
     userInput: '',
     preferences: ''
   });
+
   const [mealSuggestions, setMealSuggestions] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedMeals, setSelectedMeals] = useState([]);
+  
+  // Track calories for recommendations
+  const [remainingCalories, setRemainingCalories] = useState(0);
+  const [todayStats, setTodayStats] = useState(null);
 
+  // Normal meal types only
   const mealTypes = [
     { value: 'breakfast', label: 'Breakfast', icon: '🌅', color: '#FF9800' },
     { value: 'lunch', label: 'Lunch', icon: '🌞', color: '#4CAF50' },
     { value: 'dinner', label: 'Dinner', icon: '🌙', color: '#2196F3' },
     { value: 'snack', label: 'Snack', icon: '🍎', color: '#9C27B0' }
   ];
+
+  // Load today's stats for calorie tracking
+  useEffect(() => {
+    loadTodayStats();
+  }, [userProfile]);
+
+  const loadTodayStats = async () => {
+    try {
+      const analyticsResponse = await fetchAnalyticsData('today');
+      
+      if (analyticsResponse.success) {
+        const analyticsData = analyticsResponse.data || {};
+        
+        const todayStatsData = {
+          caloriesConsumed: analyticsData.caloriesConsumed || 0,
+          proteinConsumed: analyticsData.proteinConsumed || 0,
+          carbsConsumed: analyticsData.carbsConsumed || 0,
+          fatsConsumed: analyticsData.fatsConsumed || 0,
+          caloriesTarget: analyticsData.caloriesTarget,
+          proteinTarget: analyticsData.proteinTarget,
+          carbsTarget: analyticsData.carbsTarget,
+          fatsTarget: analyticsData.fatsTarget
+        };
+
+        setTodayStats(todayStatsData);
+        
+        // Calculate remaining calories for recommendations
+        const dailyTarget = todayStatsData.caloriesTarget || 2000;
+        const caloriesConsumed = todayStatsData.caloriesConsumed || 0;
+        const remaining = dailyTarget - caloriesConsumed;
+        
+        setRemainingCalories(remaining);
+        
+        console.log('📊 Calorie Data Loaded:', {
+          dailyTarget,
+          caloriesConsumed,
+          remaining
+        });
+      }
+    } catch (error) {
+      console.error('Error loading today stats:', error);
+      const healthMetrics = userProfile?.onboarding?.healthMetrics;
+      const dailyTarget = healthMetrics?.dailyCalories || 2000;
+      setRemainingCalories(dailyTarget);
+    }
+  };
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -44,44 +96,62 @@ const SingleMealPlanner = () => {
     setError(null);
 
     try {
-      // Get user profile data for calorie calculation
+      // Use REAL data from todayStats for recommendations
       const healthMetrics = userProfile?.onboarding?.healthMetrics;
-      const targetCalories = healthMetrics?.dailyCalories || 2000;
+      const targetCalories = todayStats?.caloriesTarget || healthMetrics?.dailyCalories || 2000;
+      const goal = userProfile?.onboarding?.basicInfo?.goal || 'maintain weight';
 
-      // Calculate target calories for single meal (max 800)
-      const remainingCalories = Math.min(targetCalories * 0.4, 800);
+      // Prepare request for Flask API with calorie data
+      const requestData = {
+        user_input: formData.userInput,
+        meal_type: formData.mealType,
+        emergency_mode: true,
+        remaining_calories: remainingCalories, // Send remaining calories for smart recommendations
+        user_profile: {
+          target_calories: targetCalories,
+          goals: goal,
+          avoid_categories: userProfile?.onboarding?.preferences?.dislikedFoods || []
+        }
+      };
 
-      // Call the single meal planner endpoint
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000'}/api/planner/single-meal`, {
+      console.log('🚀 Sending request to Flask API:', requestData);
+
+      // Call the Flask single meal endpoint
+      const response = await fetch('http://localhost:5001/api/single-meal', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          userInput: formData.userInput,
-          mealType: formData.mealType,
-          targetCalories: remainingCalories,
-          userProfile: {
-            preferences: userProfile?.onboarding?.preferences || {},
-            allergies: userProfile?.onboarding?.medical?.allergies || [],
-            dislikedFoods: userProfile?.onboarding?.preferences?.dislikedFoods || []
-          }
-        })
+        body: JSON.stringify(requestData)
       });
 
       const data = await response.json();
 
       if (data.success) {
+        // Transform the response to match your existing frontend format
+        const transformedSuggestions = data.data.options.map(option => ({
+          _id: option.id,
+          name: option.food_name,
+          description: `${option.type} - ${option.calories} kcal`,
+          calories: option.calories,
+          protein: option.protein_g,
+          carbs: option.carbs_g,
+          fat: option.fat_g,
+          type: option.type,
+          ingredients: option.items,
+          price: Number((option.calories * 0.02).toFixed(2))
+        }));
+
         setMealSuggestions({
-          suggestions: data.data.suggestions || [],
+          suggestions: transformedSuggestions,
           mealType: formData.mealType,
-          targetCalories: remainingCalories,
-          count: data.data.suggestions?.length || 0
+          targetCalories: data.data.target_calories,
+          count: transformedSuggestions.length,
+          remainingCalories: remainingCalories // Include for display
         });
         setSelectedMeals([]);
       } else {
-        setError(data.message || 'Failed to generate meal suggestions');
+        setError(data.error || 'Failed to generate meal suggestions');
       }
     } catch (error) {
       console.error('Meal suggestions error:', error);
@@ -109,7 +179,7 @@ const SingleMealPlanner = () => {
       id: meal._id || meal.name,
       name: meal.name,
       calories: meal.calories,
-      price: meal.price || (meal.calories * 0.02).toFixed(2), // Simple pricing
+      price: meal.price || (meal.calories * 0.02).toFixed(2),
       quantity: 1,
       image: meal.imageUrl,
       type: 'meal'
@@ -130,8 +200,6 @@ const SingleMealPlanner = () => {
     setError(null);
   };
 
-
-
   return (
     <div className={styles.dailyMealPlanner}>
       {/* Header */}
@@ -139,7 +207,7 @@ const SingleMealPlanner = () => {
         <div className={styles.headerContent}>
           <h1 className={styles.title}>Single Meal Planner</h1>
           <p className={styles.subtitle}>
-            Find the perfect meal for any occasion
+            Find the perfect meal based on your daily nutrition goals
           </p>
         </div>
       </div>
@@ -148,6 +216,21 @@ const SingleMealPlanner = () => {
       <div className={styles.inputSection}>
         <div className={styles.inputCard}>
           <h2 className={styles.sectionTitle}>Plan Your Meal</h2>
+
+          {/* Calorie Status Display */}
+          {todayStats && (
+            <div className={styles.calorieStatus}>
+              <div className={styles.calorieInfo}>
+                <span className={styles.calorieLabel}>Today's Progress:</span>
+                <span className={styles.calorieValue}>
+                  {todayStats.caloriesConsumed || 0} / {todayStats.caloriesTarget || 2000} kcal
+                </span>
+                <span className={styles.calorieRemaining}>
+                  {remainingCalories} kcal remaining for recommendations
+                </span>
+              </div>
+            </div>
+          )}
 
           <div className={styles.inputGrid}>
             {/* Meal Type Selection */}
@@ -205,17 +288,8 @@ const SingleMealPlanner = () => {
               disabled={loading || !formData.userInput.trim()}
               className={styles.generateButton}
             >
-              {loading ? (
-                <>
-                  <LoadingSpinner size="small" />
-                  Finding Meals...
-                </>
-              ) : (
-                <>
-                  <FiTarget />
-                  Find Meals
-                </>
-              )}
+              <FiTarget />
+              Find Meals
             </button>
           </div>
 
@@ -240,6 +314,9 @@ const SingleMealPlanner = () => {
               <div className={styles.summaryItem}>
                 <FiClock />
                 <span>{mealSuggestions.count} suggestions</span>
+              </div>
+              <div className={styles.summaryItem}>
+                <span>Remaining: {mealSuggestions.remainingCalories} kcal</span>
               </div>
             </div>
           </div>
@@ -292,7 +369,7 @@ const SingleMealPlanner = () => {
 
                   {meal.price && (
                     <div className={styles.mealPrice}>
-                      ${meal.price.toFixed(2)}
+                      ${typeof meal.price === 'number' ? meal.price.toFixed(2) : parseFloat(meal.price || 0).toFixed(2)}
                     </div>
                   )}
                 </div>
@@ -367,7 +444,6 @@ const SingleMealPlanner = () => {
 };
 
 export default SingleMealPlanner;
-
 
 
 

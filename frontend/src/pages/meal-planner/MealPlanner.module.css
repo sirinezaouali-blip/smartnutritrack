@@ -114,7 +114,7 @@
 
 .plannerTypesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--spacing-lg);
 }
 
@@ -219,6 +219,13 @@
 
 .plannerTypeCard:hover .actionArrow {
   transform: translateX(4px);
+}
+
+.plannerTypeCard.active {
+  border-color: var(--primary-green);
+  background: var(--light-green);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
 }
 
 /* Stats Section */
@@ -407,6 +414,80 @@
   line-height: 1.5;
 }
 
+/* Add these to your existing CSS */
+
+/* Emergency Banner */
+.emergencyBanner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  color: #856404;
+}
+
+.emergencyBanner svg {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.emergencyContent h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.emergencyContent p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Disabled Card Overlay */
+.disabledOverlay {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 107, 107, 0.9);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 10;
+}
+
+.disabledAction {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--error);
+  font-weight: 600;
+}
+
+.disabledText {
+  color: var(--error);
+}
+
+.lockIcon {
+  font-size: 1rem;
+}
+
+/* Ensure the card link covers the entire action area */
+.cardLink {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .mealPlanner {
@@ -514,6 +595,91 @@
     transform: translateY(0);
   }
 }
+
+/* Inactive card styles */
+.plannerTypeCard.inactive {
+  border-color: var(--gray-medium);
+  background: var(--gray-light);
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.plannerTypeCard.inactive:hover {
+  border-color: var(--gray-medium);
+  transform: none;
+  box-shadow: var(--shadow-light);
+}
+
+.plannerTypeCard.inactive .typeIcon {
+  opacity: 0.5;
+}
+
+.plannerTypeCard.inactive .typeTitle,
+.plannerTypeCard.inactive .typeDescription,
+.plannerTypeCard.inactive .typeFeature {
+  color: var(--text-secondary);
+}
+
+.plannerTypeCard.inactive .actionText {
+  color: var(--error);
+}
+
+.plannerTypeCard.inactive .actionArrow {
+  color: var(--error);
+}
+
+/* Tooltip styles */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 300px;
+  background-color: var(--text-primary);
+  color: var(--white);
+  text-align: center;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  position: absolute;
+  z-index: 1000;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -150px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: var(--font-size-sm);
+  box-shadow: var(--shadow-medium);
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--text-primary) transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Card link styles */
+.cardLink {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  height: 100%;
+}
+
 
 
 

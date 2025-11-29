@@ -1,6 +1,8 @@
 const SocialPost = require('../models/SocialPost');
 const User = require('../models/User');
 const mongoose = require('mongoose');
+const Notification = require('../models/Notification');
+const Achievement = require('../models/Achievement');
 
 // @desc    Create social post
 // @route   POST /api/social/posts
@@ -221,12 +223,14 @@ const getPostById = async (req, res) => {
 // @desc    Like/unlike a post
 // @route   POST /api/social/posts/:id/like
 // @access  Private
+
+// Update the toggleLike function:
 const toggleLike = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.userId;
 
-    const post = await SocialPost.findById(id);
+    const post = await SocialPost.findById(id).populate('userId');
     if (!post) {
       return res.status(404).json({
         success: false,
@@ -234,8 +238,20 @@ const toggleLike = async (req, res) => {
       });
     }
 
+    const wasLiked = post.likes.includes(userId);
     await post.toggleLike(userId);
     await post.populate('likes', 'firstName lastName profilePicture');
+
+    // Create notification if someone else liked the post
+    if (!wasLiked && post.userId._id.toString() !== userId) {
+      await Notification.createNotification({
+        userId: post.userId._id,
+        type: 'like',
+        fromUser: userId,
+        postId: post._id,
+        message: `${req.user.firstName} liked your post`
+      });
+    }
 
     res.json({
       success: true,
@@ -255,9 +271,7 @@ const toggleLike = async (req, res) => {
   }
 };
 
-// @desc    Add comment to post
-// @route   POST /api/social/posts/:id/comment
-// @access  Private
+// Update the addComment function:
 const addComment = async (req, res) => {
   try {
     const { id } = req.params;
@@ -271,7 +285,7 @@ const addComment = async (req, res) => {
       });
     }
 
-    const post = await SocialPost.findById(id);
+    const post = await SocialPost.findById(id).populate('userId');
     if (!post) {
       return res.status(404).json({
         success: false,
@@ -293,6 +307,18 @@ const addComment = async (req, res) => {
     const newComment = parentCommentId 
       ? post.comments.id(parentCommentId).replies.slice(-1)[0]
       : post.comments[post.comments.length - 1];
+
+    // Create notification for post owner
+    if (post.userId._id.toString() !== userId) {
+      await Notification.createNotification({
+        userId: post.userId._id,
+        type: 'comment',
+        fromUser: userId,
+        postId: post._id,
+        commentId: newComment._id,
+        message: `${req.user.firstName} commented on your post`
+      });
+    }
 
     res.status(201).json({
       success: true,

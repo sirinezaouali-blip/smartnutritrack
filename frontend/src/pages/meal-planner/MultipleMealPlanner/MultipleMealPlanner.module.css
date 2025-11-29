@@ -1,30 +1,217 @@
-/* Multiple Meal Planner Page Styles */
+/* Multiple Meal Planner - Redesigned */
 .multipleMealPlanner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
-  background-color: var(--white);
+  padding: 0 20px 40px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   min-height: 100vh;
 }
 
 /* Header */
 .header {
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--gray-light);
+  text-align: center;
+  padding: 40px 0 30px;
+  background: #bae9ba;
+  margin: 0 -20px 30px;
+  border-radius: 0 0 20px 20px;
+  color: var(--text-primary);
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1);
 }
 
-.headerContent h1 {
+.headerContent {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
   font-size: 2.5rem;
   font-weight: 700;
+  margin: 0 0 12px 0;
   color: var(--text-primary);
-  margin: 0 0 8px 0;
+}
+
+.titleIcon {
+  font-size: 2.2rem;
+  color: var(--primary-green);
 }
 
 .subtitle {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: var(--text-secondary);
   margin: 0;
+  line-height: 1.5;
+}
+
+/* Quick Status Bar */
+.quickStatusBar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 30px;
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.statusItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--gray-light);
+  border-radius: 12px;
+  transition: transform 0.2s ease;
+}
+
+.statusItem:hover {
+  transform: translateY(-2px);
+}
+
+.statusIcon {
+  font-size: 1.8rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.statusInfo {
+  flex: 1;
+}
+
+.statusLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.statusValue {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--primary-green);
+}
+
+.statusValue.high {
+  color: #e74c3c;
+}
+
+.statusValue.medium {
+  color: #f39c12;
+}
+
+.statusValue.low {
+  color: #27ae60;
+}
+
+/* Navigation Tabs */
+.navigationTabs {
+  display: flex;
+  background: white;
+  padding: 8px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--gray-light);
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 20px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab:hover {
+  color: var(--primary-green);
+  background: var(--light-green);
+}
+
+.tab.active {
+  background: var(--primary-gradient);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.tabIcon {
+  font-size: 1.2rem;
+}
+
+/* Content Sections */
+.contentSections {
+  margin-bottom: 40px;
+}
+
+.guidanceSection,
+.plannerSection {
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Emergency Banner */
+.emergencyBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px;
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  border: 1px solid #ffeaa7;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  color: #856404;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.bannerIcon {
+  font-size: 2rem;
+  color: #e74c3c;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.emergencyContent h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #856404;
+}
+
+.emergencyContent p {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.emergencyNote {
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  border-left: 4px solid #e74c3c;
 }
 
 /* Input Section */
@@ -33,20 +220,69 @@
 }
 
 .inputCard {
-  background-color: var(--white);
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--gray-light);
-  border-radius: 16px;
-  padding: 30px;
-  box-shadow: var(--shadow-light);
 }
 
-.sectionTitle {
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--gray-light);
+}
+
+.cardIcon {
+  font-size: 1.8rem;
+  color: var(--primary-green);
+}
+
+.cardTitle {
   font-size: 1.8rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 24px 0;
+  margin: 0;
 }
 
+/* Calorie Meter */
+.calorieStatus {
+  margin-bottom: 30px;
+}
+
+.calorieMeter {
+  background: var(--gray-light);
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.meterBar {
+  height: 12px;
+  background: #e9ecef;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.meterFill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50, #45a049);
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+.meterLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Input Grid */
 .inputGrid {
   display: grid;
   gap: 24px;
@@ -58,16 +294,23 @@
 }
 
 .inputLabel {
-  font-size: 1rem;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.labelIcon {
+  font-size: 1.2rem;
 }
 
 /* Meal Type Selection */
 .mealTypeGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 12px;
 }
 
@@ -76,55 +319,60 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 16px 12px;
+  padding: 20px 12px;
   border: 2px solid var(--gray-medium);
-  border-radius: 12px;
-  background-color: var(--white);
+  border-radius: 16px;
+  background: white;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-height: 80px;
+  min-height: 100px;
 }
 
 .mealTypeButton:hover {
   border-color: var(--primary-green);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-light);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .mealTypeButton.active {
   border-color: var(--meal-color);
-  background-color: var(--light-green);
-  box-shadow: var(--shadow-light);
+  background: var(--light-green);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
 .mealIcon {
-  font-size: 1.5rem;
-  margin-bottom: 6px;
+  font-size: 2rem;
+  margin-bottom: 8px;
 }
 
 .mealLabel {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 500;
   color: var(--text-primary);
+  text-align: center;
 }
 
 /* Text Inputs */
 .textInput,
 .textArea {
   width: 100%;
-  padding: 14px 16px;
+  padding: 16px 20px;
   border: 2px solid var(--gray-medium);
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 1rem;
   font-family: inherit;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
   resize: vertical;
+  background: white;
 }
 
 .textInput:focus,
 .textArea:focus {
   outline: none;
   border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+  transform: translateY(-1px);
 }
 
 .textInput::placeholder,
@@ -134,29 +382,31 @@
 
 /* Action Section */
 .actionSection {
-  margin-top: 24px;
+  margin-top: 32px;
   text-align: center;
 }
 
 .generateButton {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 16px 32px;
+  gap: 12px;
+  padding: 20px 40px;
   background: var(--primary-gradient);
-  color: var(--white);
+  color: white;
   border: none;
-  border-radius: 12px;
-  font-size: 1.1rem;
+  border-radius: 16px;
+  font-size: 1.2rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: var(--shadow-light);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
 .generateButton:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-medium);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
 }
 
 .generateButton:disabled {
@@ -165,20 +415,38 @@
   transform: none;
 }
 
+.buttonIcon {
+  font-size: 1.3rem;
+}
+
 /* Error Message */
 .errorMessage {
-  margin-top: 16px;
-  padding: 12px 16px;
-  background-color: #ffebee;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: #ffebee;
   border: 1px solid #ffcdd2;
-  border-radius: 8px;
+  border-radius: 12px;
   color: var(--error);
-  text-align: center;
+  text-align: left;
+}
+
+.errorIcon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
 }
 
 /* Results Section */
 .resultsSection {
-  margin-bottom: 40px;
+  margin-top: 40px;
+  animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .resultsHeader {
@@ -193,234 +461,266 @@
 .planNavigation {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .navButton {
-  padding: 8px;
-  border: 2px solid var(--gray-medium);
-  background-color: var(--white);
-  color: var(--text-primary);
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--gray-medium);
+  background: white;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
 }
 
 .navButton:hover:not(:disabled) {
   border-color: var(--primary-green);
-  color: var(--primary-green);
+  background: var(--light-green);
+  transform: translateY(-2px);
 }
 
 .navButton:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .planCounter {
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-primary);
-  min-width: 100px;
+  min-width: 120px;
   text-align: center;
 }
 
 /* Plan Card */
 .planCard {
-  background-color: var(--white);
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--gray-light);
-  border-radius: 16px;
-  padding: 24px;
   margin-bottom: 30px;
-  box-shadow: var(--shadow-light);
 }
 
 .planHeader {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 20px;
 }
 
 .planTitle h3 {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 8px 0;
+  margin: 0 0 16px 0;
 }
 
 .planSummary {
   display: flex;
-  gap: 16px;
+  gap: 24px;
   flex-wrap: wrap;
 }
 
 .summaryItem {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.calorieNote {
+  font-size: 0.9rem;
   color: var(--text-secondary);
-  font-size: 0.95rem;
+  font-weight: 400;
 }
 
 .planMeta {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .varietyScore,
-.nutritionScore {
+.nutritionScore,
+.lowCarbBadge {
+  padding: 8px 16px;
+  border-radius: 20px;
   font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  background-color: var(--light-green);
-  padding: 4px 8px;
-  border-radius: 12px;
+  font-weight: 600;
+}
+
+.varietyScore {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.nutritionScore {
+  background: #e8f5e8;
+  color: #2e7d32;
+}
+
+.lowCarbBadge {
+  background: #fff3e0;
+  color: #ef6c00;
 }
 
 /* Meals Grid */
 .mealsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
 }
 
 .mealCard {
-  background-color: var(--white);
+  background: white;
   border: 2px solid var(--gray-light);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 24px;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
+  overflow: hidden;
 }
 
 .mealCard:hover {
   border-color: var(--primary-green);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-light);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .mealCard.selected {
   border-color: var(--primary-green);
-  background-color: var(--light-green);
-  box-shadow: var(--shadow-light);
+  background: var(--light-green);
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);
 }
 
 .mealHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .mealType {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+}
+
+.mealIcon {
+  font-size: 1.5rem;
 }
 
 .mealTypeLabel {
-  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .selectionIndicator {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border: 2px solid var(--gray-medium);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--white);
   transition: all 0.3s ease;
 }
 
 .mealCard.selected .selectionIndicator {
-  background-color: var(--primary-green);
+  background: var(--primary-green);
   border-color: var(--primary-green);
-  color: var(--white);
+  color: white;
 }
 
-.mealContent h4 {
-  font-size: 1.1rem;
+.mealContent {
+  margin-bottom: 20px;
+}
+
+.mealName {
+  font-size: 1.3rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 6px 0;
+  margin: 0 0 8px 0;
 }
 
 .mealDescription {
   color: var(--text-secondary);
-  margin: 0 0 12px 0;
-  font-size: 0.9rem;
-  line-height: 1.4;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
 }
 
 .mealNutrition {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 12px;
+  background: var(--gray-light);
+  padding: 16px;
+  border-radius: 12px;
 }
 
 .nutritionItem {
   text-align: center;
-  padding: 6px;
-  background-color: var(--gray-light);
-  border-radius: 4px;
 }
 
 .nutritionValue {
   display: block;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--primary-green);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .nutritionUnit {
   display: block;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
-  margin-top: 1px;
+  text-transform: uppercase;
+  margin-top: 2px;
 }
 
 .mealIngredients {
   border-top: 1px solid var(--gray-light);
-  padding-top: 12px;
+  padding-top: 16px;
 }
 
 .mealIngredients h5 {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 6px 0;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .ingredientsList {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
-.ingredient,
-.moreIngredients {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  background-color: var(--gray-light);
-  padding: 2px 6px;
-  border-radius: 10px;
+.ingredient {
+  background: var(--gray-light);
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
 }
 
 .moreIngredients {
-  font-style: italic;
+  background: var(--primary-green);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 /* Comparison Section */
@@ -437,15 +737,15 @@
 
 .comparisonGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
 }
 
 .comparisonCard {
-  background-color: var(--white);
+  background: white;
   border: 2px solid var(--gray-light);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -453,97 +753,98 @@
 .comparisonCard:hover {
   border-color: var(--primary-green);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-light);
 }
 
 .comparisonCard.active {
   border-color: var(--primary-green);
-  background-color: var(--light-green);
-  box-shadow: var(--shadow-light);
+  background: var(--light-green);
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.15);
 }
 
 .comparisonHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .comparisonHeader h4 {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
 }
 
-.planBadges {
-  display: flex;
-  gap: 6px;
-}
-
 .currentBadge {
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: var(--white);
-  background-color: var(--primary-green);
-  padding: 2px 6px;
-  border-radius: 8px;
+  background: var(--primary-green);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .comparisonStats {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .stat {
   text-align: center;
+  background: var(--gray-light);
+  padding: 12px 8px;
+  border-radius: 8px;
 }
 
 .statValue {
   display: block;
   font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--primary-green);
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .statLabel {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-top: 2px;
 }
 
 .planPreview {
-  border-top: 1px solid var(--gray-light);
-  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .previewMeal {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 6px;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
+  gap: 8px;
+  padding: 8px;
+  background: var(--gray-light);
+  border-radius: 8px;
 }
 
 .previewIcon {
-  font-size: 0.9rem;
+  font-size: 1.2rem;
 }
 
 .previewName {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 .moreMeals {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  font-style: italic;
   text-align: center;
-  padding: 4px 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 8px;
+  background: var(--gray-light);
+  border-radius: 8px;
 }
 
 /* Results Actions */
@@ -556,27 +857,27 @@
 
 .addMealsButton,
 .resetButton {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 24px;
+  padding: 16px 32px;
   border: none;
   border-radius: 12px;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .addMealsButton {
-  background: var(--primary-gradient);
-  color: var(--white);
-  box-shadow: var(--shadow-light);
+  background: var(--primary-green);
+  color: white;
 }
 
 .addMealsButton:hover:not(:disabled) {
+  background: #45a049;
   transform: translateY(-2px);
-  box-shadow: var(--shadow-medium);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
 }
 
 .addMealsButton:disabled {
@@ -586,161 +887,434 @@
 }
 
 .resetButton {
-  background-color: var(--white);
+  background: white;
   color: var(--text-primary);
   border: 2px solid var(--gray-medium);
 }
 
 .resetButton:hover {
   border-color: var(--primary-green);
-  color: var(--primary-green);
+  background: var(--light-green);
+  transform: translateY(-2px);
+}
+
+/* Macro Targets Section */
+.macroTargets {
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--gray-light);
+  margin-bottom: 30px;
+}
+
+.macroTargets h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 24px 0;
+  text-align: center;
+}
+
+.macroGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.macroItem {
+  background: var(--gray-light);
+  padding: 24px;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.macroHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.macroName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.macroTarget {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  background: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.macroBar {
+  height: 12px;
+  background: #e9ecef;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.macroFill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+.macroFill.protein {
+  background: linear-gradient(90deg, #4CAF50, #45a049);
+}
+
+.macroFill.carbs {
+  background: linear-gradient(90deg, #2196F3, #1976D2);
+}
+
+.macroFill.fat {
+  background: linear-gradient(90deg, #FF9800, #F57C00);
+}
+
+.macroCurrent {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 /* Tips Section */
 .tipsSection {
-  margin-top: 50px;
-  padding-top: 30px;
+  margin-top: 60px;
+  padding-top: 40px;
   border-top: 1px solid var(--gray-light);
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 40px 0;
+  text-align: center;
+}
+
+.sectionIcon {
+  font-size: 1.8rem;
+  color: var(--primary-green);
 }
 
 .tipsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
 }
 
 .tipCard {
-  background-color: var(--white);
+  background: white;
   border: 1px solid var(--gray-light);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 20px;
+  padding: 32px 24px;
   text-align: center;
-  transition: box-shadow 0.3s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.tipCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
 }
 
 .tipCard:hover {
-  box-shadow: var(--shadow-light);
+  transform: translateY(-8px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
 }
 
 .tipIcon {
-  font-size: 2rem;
-  margin-bottom: 12px;
+  font-size: 3rem;
+  margin-bottom: 20px;
 }
 
 .tipTitle {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
 }
 
 .tipDescription {
   color: var(--text-secondary);
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.6;
+  font-size: 1rem;
 }
 
-/* Responsive Design */
+/* Mobile Responsive */
 @media (max-width: 768px) {
   .multipleMealPlanner {
-    padding: 15px;
+    padding: 0 15px 30px;
   }
 
-  .headerContent h1 {
+  .header {
+    padding: 30px 0 20px;
+    margin: 0 -15px 20px;
+    border-radius: 0 0 16px 16px;
+  }
+
+  .title {
     font-size: 2rem;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .titleIcon {
+    font-size: 1.8rem;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+  }
+
+  .quickStatusBar {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .statusItem {
+    padding: 12px;
+  }
+
+  .statusIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.4rem;
+  }
+
+  .statusValue {
+    font-size: 1.2rem;
+  }
+
+  .navigationTabs {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tab {
+    padding: 14px 16px;
   }
 
   .inputCard {
-    padding: 20px;
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+
+  .cardTitle {
+    font-size: 1.5rem;
   }
 
   .mealTypeGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mealTypeButton {
+    min-height: 80px;
+    padding: 16px 8px;
+  }
+
+  .mealIcon {
+    font-size: 1.6rem;
+  }
+
+  .generateButton {
+    width: 100%;
+    padding: 18px 24px;
+    font-size: 1.1rem;
+  }
+
+  .resultsHeader {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .planNavigation {
+    justify-content: center;
+  }
+
+  .planHeader {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .planMeta {
+    justify-content: center;
   }
 
   .mealsGrid {
     grid-template-columns: 1fr;
   }
 
+  .mealNutrition {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .comparisonGrid {
     grid-template-columns: 1fr;
   }
 
-  .planHeader {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .planMeta {
-    align-items: flex-start;
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .resultsHeader {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .planNavigation {
-    width: 100%;
-    justify-content: center;
-  }
-
   .resultsActions {
     flex-direction: column;
-    align-items: stretch;
   }
 
   .addMealsButton,
   .resetButton {
+    width: 100%;
     justify-content: center;
+  }
+
+  .macroGrid {
+    grid-template-columns: 1fr;
   }
 
   .tipsGrid {
     grid-template-columns: 1fr;
   }
+
+  .sectionTitle {
+    font-size: 1.6rem;
+  }
 }
 
 @media (max-width: 480px) {
   .multipleMealPlanner {
-    padding: 10px;
+    padding: 0 12px 20px;
   }
 
-  .headerContent h1 {
-    font-size: 1.8rem;
+  .header {
+    padding: 25px 0 15px;
+    margin: 0 -12px 15px;
+  }
+
+  .title {
+    font-size: 1.7rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .quickStatusBar {
+    padding: 12px;
+  }
+
+  .inputCard {
+    padding: 20px 16px;
   }
 
   .mealTypeGrid {
     grid-template-columns: 1fr;
   }
 
+  .textInput,
+  .textArea {
+    padding: 14px 16px;
+  }
+
+  .generateButton {
+    padding: 16px 20px;
+    font-size: 1rem;
+  }
+
+  .planCard {
+    padding: 20px 16px;
+  }
+
+  .mealCard {
+    padding: 16px;
+  }
+
   .mealNutrition {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-  }
-
-  .nutritionItem {
-    padding: 4px;
-  }
-
-  .nutritionValue {
-    font-size: 0.8rem;
-  }
-
-  .nutritionUnit {
-    font-size: 0.65rem;
-  }
-
-  .comparisonStats {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     gap: 8px;
   }
 
-  .stat {
-    display: flex;
-    justify-content: space-between;
-    text-align: left;
+  .tipCard {
+    padding: 24px 16px;
   }
+
+  .tipIcon {
+    font-size: 2.5rem;
+  }
+
+  .tipTitle {
+    font-size: 1.2rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .multipleMealPlanner {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  }
+
+  .inputCard,
+  .tipCard,
+  .quickStatusBar,
+  .planCard,
+  .comparisonCard,
+  .mealCard,
+  .macroTargets {
+    background: #2d2d2d;
+    border-color: #404040;
+  }
+
+  .textInput,
+  .textArea {
+    background: #1a1a1a;
+    border-color: #404040;
+    color: white;
+  }
+
+  .statusItem,
+  .mealNutrition,
+  .stat,
+  .previewMeal,
+  .macroItem {
+    background: #1a1a1a;
+  }
+
+  .meterBar,
+  .macroBar {
+    background: #404040;
+  }
+}
+
+/* CSS Variables */
+:root {
+  --primary-green: #4CAF50;
+  --light-green: #e8f5e8;
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --gray-light: #f7fafc;
+  --gray-medium: #e2e8f0;
+  --error: #e53e3e;
 }

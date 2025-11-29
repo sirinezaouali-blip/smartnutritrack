@@ -35,7 +35,7 @@ const mealSchema = new mongoose.Schema({
     required: true,
     min: 0
   },
-  fat: {
+  fats: {
     type: Number,
     required: true,
     min: 0

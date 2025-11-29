@@ -315,6 +315,7 @@ const Step6Review = () => {
               </div>
               <div className={styles.sectionContent}>
                 <div className={styles.metricsGrid}>
+                  {/* Existing metrics */}
                   <div className={styles.metricCard}>
                     <div className={styles.metricValue}>{formatValue(healthMetrics.bmi)}</div>
                     <div className={styles.metricLabel}>BMI</div>
@@ -342,6 +343,25 @@ const Step6Review = () => {
                     <div className={styles.metricValue}>{formatValue(healthMetrics.dailyCalories)}</div>
                     <div className={styles.metricLabel}>Daily Calories</div>
                     <div className={styles.metricDescription}>recommended</div>
+                  </div>
+
+                  {/* NEW: Macronutrient targets */}
+                  <div className={styles.metricCard}>
+                    <div className={styles.metricValue}>{formatValue(healthMetrics.proteinTarget)}</div>
+                    <div className={styles.metricLabel}>Protein</div>
+                    <div className={styles.metricDescription}>grams/day</div>
+                  </div>
+                  
+                  <div className={styles.metricCard}>
+                    <div className={styles.metricValue}>{formatValue(healthMetrics.carbsTarget)}</div>
+                    <div className={styles.metricLabel}>Carbs</div>
+                    <div className={styles.metricDescription}>grams/day</div>
+                  </div>
+                  
+                  <div className={styles.metricCard}>
+                    <div className={styles.metricValue}>{formatValue(healthMetrics.fatsTarget)}</div>
+                    <div className={styles.metricLabel}>Fats</div>
+                    <div className={styles.metricDescription}>grams/day</div>
                   </div>
                 </div>
               </div>
@@ -399,6 +419,11 @@ const Step6Review = () => {
 };
 
 export default Step6Review;
+
+
+
+
+
 
 
 
